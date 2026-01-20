@@ -94,7 +94,21 @@ export async function screenshot(page: Page, options: ScreenshotOptions = {}): P
   return output;
 }
 
+// Whitelist of safe operations
+const SAFE_OPERATIONS = [
+  /^document\.title$/,
+  /^document\.URL$/,
+  /^window\.location\.href$/,
+  /^window\.innerWidth$/,
+  /^window\.innerHeight$/,
+  /^document\.body\.scrollHeight$/,
+  /^document\.body\.scrollWidth$/,
+  /^document\.readyState$/,
+];
+
+// Enhanced blacklist for dangerous patterns
 const FORBIDDEN_PATTERNS = [
+  /\b(eval|Function|constructor)\b/i,
   /require\s*\(/,
   /import\s*\(/,
   /process\./,
@@ -102,17 +116,38 @@ const FORBIDDEN_PATTERNS = [
   /fs\./,
   /__dirname/,
   /__filename/,
+  /globalThis/,
+  /window\s*\[/,
+  /\[(['"`])[a-z_]+\1\]/i, // Bracket notation: window['process']
+  /Object\.(assign|defineProperty|create)/,
+  /\.constructor/,
+  /prototype/,
 ];
 
 export async function evaluate(page: Page, script: string): Promise<any> {
-  // Security check
-  for (const pattern of FORBIDDEN_PATTERNS) {
-    if (pattern.test(script)) {
-      throw new Error("Potentially unsafe script blocked");
+  const trimmedScript = script.trim();
+
+  // 1. Whitelist mode - only allow safe operations
+  const isSafe = SAFE_OPERATIONS.some(pattern => pattern.test(trimmedScript));
+
+  if (!isSafe) {
+    // 2. Enhanced blacklist check
+    for (const pattern of FORBIDDEN_PATTERNS) {
+      if (pattern.test(trimmedScript)) {
+        throw new Error(`Unsafe operation blocked: ${pattern.source}`);
+      }
     }
   }
 
-  return page.evaluate(script);
+  // 3. Execute and limit result size (防止数据窃取)
+  const result = await page.evaluate(trimmedScript);
+  const serialized = JSON.stringify(result);
+
+  if (serialized.length > 100000) {
+    throw new Error('Result too large (max 100KB). Use snapshot command instead.');
+  }
+
+  return result;
 }
 
 export async function url(page: Page): Promise<string> {

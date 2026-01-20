@@ -97,6 +97,11 @@ export async function saveConfig(config: Config): Promise<void> {
   }
 
   await writeFile(configPath, JSON.stringify(config, null, 2), "utf-8");
+
+  // Security: Set file permissions to 0o600 (owner read/write only)
+  // Protects sensitive configuration from other users
+  const { chmod } = await import("node:fs/promises");
+  await chmod(configPath, 0o600);
 }
 
 export async function getConfigValue(key: string): Promise<unknown> {
@@ -115,7 +120,43 @@ export async function getConfigValue(key: string): Promise<unknown> {
   return value;
 }
 
+// Whitelist of config keys that can be modified via CLI
+const ALLOWED_CONFIG_KEYS = [
+  "defaults.session",
+  "defaults.headed",
+  "defaults.channel",
+  "defaults.timeout",
+];
+
+// Dangerous browser arguments that should be blocked
+const DANGEROUS_BROWSER_ARGS = [
+  "remote-debugging-port",
+  "disable-web-security",
+  "disable-site-isolation",
+  "disable-features=IsolateOrigins",
+  "disable-setuid-sandbox",
+];
+
 export async function setConfigValue(key: string, value: unknown): Promise<void> {
+  // Security: Whitelist check - only allow safe config keys
+  if (!ALLOWED_CONFIG_KEYS.includes(key)) {
+    throw new Error(
+      `Config key '${key}' cannot be modified via CLI. ` +
+      `Allowed keys: ${ALLOWED_CONFIG_KEYS.join(", ")}`
+    );
+  }
+
+  // Security: Validate browser.args if being set
+  if (key === "browser.args" && Array.isArray(value)) {
+    for (const arg of value as string[]) {
+      for (const dangerous of DANGEROUS_BROWSER_ARGS) {
+        if (arg.toLowerCase().includes(dangerous)) {
+          throw new Error(`Dangerous browser argument blocked: ${arg}`);
+        }
+      }
+    }
+  }
+
   const config = await loadConfig();
   const keys = key.split(".");
 

@@ -75,6 +75,11 @@ export class SessionStore {
     const file = this.getSessionFile(session.name);
     const content = JSON.stringify(session, null, 2);
     await writeFile(file, content, "utf-8");
+
+    // Security: Set file permissions to 0o600 (owner read/write only)
+    // Protects wsEndpoint from being read by other processes
+    const { chmod } = await import("node:fs/promises");
+    await chmod(file, 0o600);
   }
 
   async create(name: string, channel: "chrome" | "msedge" | "chromium"): Promise<Session> {

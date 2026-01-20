@@ -98,17 +98,31 @@ export class BrowserManager {
     }
 
     try {
+      // Security: Check if system Keychain should be used (opt-in for security)
+      const useSystemKeychain = process.env.HAB_USE_SYSTEM_KEYCHAIN === 'true';
+
+      const ignoreArgs = ["--enable-automation"];
+
+      if (!useSystemKeychain) {
+        // Default: Use isolated password store (more secure)
+        launchArgs.push("--password-store=basic");
+        console.log("🔒 Using isolated password store (secure mode). Set HAB_USE_SYSTEM_KEYCHAIN=true to use system Keychain.");
+      } else {
+        // Opt-in: Allow system Keychain access
+        ignoreArgs.push("--password-store=basic", "--use-mock-keychain");
+        console.log("⚠️  Using system Keychain (HAB_USE_SYSTEM_KEYCHAIN=true)");
+      }
+
+      if (loadExtensions) {
+        ignoreArgs.push("--disable-extensions");
+      }
+
       // Use launchPersistentContext for UserData persistence
       this.context = await chromium.launchPersistentContext(this.session.userDataDir, {
         channel: this.options.channel,
         headless: !this.options.headed,
         args: launchArgs,
-        ignoreDefaultArgs: [
-          "--enable-automation",
-          "--password-store=basic",     // 移除这个，允许使用系统 Keychain
-          "--use-mock-keychain",        // 移除这个，允许访问真实 Keychain
-          ...(loadExtensions ? ["--disable-extensions"] : []),
-        ],
+        ignoreDefaultArgs: ignoreArgs,
         viewport: { width: 1280, height: 720 },
       });
 
@@ -137,6 +151,42 @@ export class BrowserManager {
     }
   }
 
+  // Security: Whitelist of trusted extension IDs
+  // Users can add their trusted extensions here
+  private ALLOWED_EXTENSION_IDS = new Set<string>([
+    // Example: MetaMask
+    // 'nkbihfbeogaeaoehlefnkodbefgpgknn',
+    // Add your trusted extensions here
+  ]);
+
+  // Security: Check if extension manifest contains dangerous permissions
+  private isExtensionSafe(manifestPath: string): boolean {
+    try {
+      const { readFileSync } = require('node:fs');
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+
+      // Check for dangerous permissions
+      const dangerousPerms = ['debugger', 'webRequest', 'proxy', '<all_urls>', 'webRequestBlocking'];
+      const permissions = [
+        ...(manifest.permissions || []),
+        ...(manifest.host_permissions || []),
+        ...(manifest.optional_permissions || [])
+      ];
+
+      for (const perm of dangerousPerms) {
+        if (permissions.includes(perm)) {
+          console.log(`⚠️  Extension blocked: contains dangerous permission '${perm}'`);
+          return false;
+        }
+      }
+
+      return true;
+    } catch (error) {
+      console.log(`⚠️  Failed to validate extension manifest: ${error}`);
+      return false;
+    }
+  }
+
   private loadChromeExtensions(): string[] {
     const extensionPaths: string[] = [];
 
@@ -159,6 +209,12 @@ export class BrowserManager {
         // Skip hidden files and .DS_Store
         if (extensionId.startsWith('.')) continue;
 
+        // Security: Whitelist check (if whitelist is not empty, enforce it)
+        if (this.ALLOWED_EXTENSION_IDS.size > 0 && !this.ALLOWED_EXTENSION_IDS.has(extensionId)) {
+          console.log(`⚠️  Extension ${extensionId} not in whitelist, skipping`);
+          continue;
+        }
+
         const extensionDir = join(chromeExtensionsDir, extensionId);
 
         try {
@@ -180,7 +236,14 @@ export class BrowserManager {
           // Verify the extension path exists and has manifest
           const manifestPath = join(extensionPath, 'manifest.json');
           if (existsSync(manifestPath)) {
+            // Security: Validate extension safety
+            if (!this.isExtensionSafe(manifestPath)) {
+              console.log(`⚠️  Extension ${extensionId} blocked due to dangerous permissions`);
+              continue;
+            }
+
             extensionPaths.push(extensionPath);
+            console.log(`✅ Loaded safe extension: ${extensionId}`);
           }
         } catch (error) {
           // Skip invalid extension directories
@@ -189,15 +252,7 @@ export class BrowserManager {
         }
       }
 
-      console.log(`Found ${extensionPaths.length} valid Chrome extensions to load`);
-
-      // Log first few extension paths for debugging
-      if (extensionPaths.length > 0) {
-        console.log(`Sample extension paths (first 3):`);
-        extensionPaths.slice(0, 3).forEach(path => {
-          console.log(`  - ${path}`);
-        });
-      }
+      console.log(`Found ${extensionPaths.length} valid and safe Chrome extensions to load`);
     } catch (error) {
       console.error("Error loading Chrome extensions:", error);
     }
