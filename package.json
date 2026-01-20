@@ -41,7 +41,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hubo1989/hyper-agent-browser.git"
+    "url": "git+https://github.com/hubo1989/hyper-agent-browser.git"
   },
   "bugs": {
     "url": "https://github.com/hubo1989/hyper-agent-browser/issues"
