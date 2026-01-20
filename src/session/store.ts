@@ -23,7 +23,7 @@ export class SessionStore {
   private baseDir: string;
 
   constructor(baseDir?: string) {
-    this.baseDir = baseDir || join(homedir(), ".hba", "sessions");
+    this.baseDir = baseDir || join(homedir(), ".hab", "sessions");
   }
 
   private getSessionDir(name: string): string {

@@ -64,7 +64,7 @@ export class BrowserManager {
 
   async launch(): Promise<void> {
     // Sync Chrome data from system profile (only if enabled)
-    const syncSystemChrome = process.env.HBA_SYNC_CHROME === 'true';
+    const syncSystemChrome = process.env.HAB_SYNC_CHROME === 'true';
     if (syncSystemChrome) {
       console.log("Syncing data from system Chrome profile...");
       syncChromeData(this.session.userDataDir);
@@ -77,7 +77,7 @@ export class BrowserManager {
     ];
 
     // Check if extensions should be loaded (opt-in via environment variable)
-    const loadExtensions = process.env.HBA_LOAD_EXTENSIONS === 'true';
+    const loadExtensions = process.env.HAB_LOAD_EXTENSIONS === 'true';
 
     if (loadExtensions) {
       // Load extensions from Chrome profile
@@ -94,7 +94,7 @@ export class BrowserManager {
         }
       }
     } else {
-      console.log("Extensions disabled by default. Set HBA_LOAD_EXTENSIONS=true to enable.");
+      console.log("Extensions disabled by default. Set HAB_LOAD_EXTENSIONS=true to enable.");
     }
 
     try {
@@ -258,12 +258,12 @@ export class BrowserManager {
     try {
       await this.page.evaluate((op) => {
         // Remove existing indicator
-        const existing = document.getElementById('hba-operation-indicator');
+        const existing = document.getElementById('hab-operation-indicator');
         if (existing) existing.remove();
 
         // Create new indicator
         const indicator = document.createElement('div');
-        indicator.id = 'hba-operation-indicator';
+        indicator.id = 'hab-operation-indicator';
         indicator.innerHTML = `
           <div style="
             position: fixed;
@@ -281,29 +281,29 @@ export class BrowserManager {
             display: flex;
             align-items: center;
             gap: 10px;
-            animation: hba-slide-in 0.3s ease-out;
+            animation: hab-slide-in 0.3s ease-out;
           ">
             <div style="
               width: 8px;
               height: 8px;
               background: #4ade80;
               border-radius: 50%;
-              animation: hba-pulse 1.5s ease-in-out infinite;
+              animation: hab-pulse 1.5s ease-in-out infinite;
             "></div>
             <span>🤖 Agent操作中: ${op}</span>
           </div>
         `;
 
         // Add animations
-        if (!document.getElementById('hba-styles')) {
+        if (!document.getElementById('hab-styles')) {
           const style = document.createElement('style');
-          style.id = 'hba-styles';
+          style.id = 'hab-styles';
           style.textContent = `
-            @keyframes hba-slide-in {
+            @keyframes hab-slide-in {
               from { transform: translateX(400px); opacity: 0; }
               to { transform: translateX(0); opacity: 1; }
             }
-            @keyframes hba-pulse {
+            @keyframes hab-pulse {
               0%, 100% { opacity: 1; transform: scale(1); }
               50% { opacity: 0.5; transform: scale(1.2); }
             }
@@ -323,9 +323,9 @@ export class BrowserManager {
 
     try {
       await this.page.evaluate(() => {
-        const indicator = document.getElementById('hba-operation-indicator');
+        const indicator = document.getElementById('hab-operation-indicator');
         if (indicator) {
-          indicator.style.animation = 'hba-slide-in 0.3s ease-out reverse';
+          indicator.style.animation = 'hab-slide-in 0.3s ease-out reverse';
           setTimeout(() => indicator.remove(), 300);
         }
       });

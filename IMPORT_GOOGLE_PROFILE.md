@@ -23,7 +23,7 @@ ls ~/Library/Application\ Support/Google/Chrome/
 # 输出: Default, Profile 1, Profile 2, ...
 ```
 
-### 步骤 3: 复制 Profile 到 hba Session
+### 步骤 3: 复制 Profile 到 hab Session
 
 ```bash
 # 创建一个使用 Google 账号的 session
@@ -31,16 +31,16 @@ SESSION_NAME="gmail-logged-in"
 
 # 方法 A: 复制整个 Default profile
 cp -r ~/Library/Application\ Support/Google/Chrome/Default \
-      ~/.hba/sessions/$SESSION_NAME/userdata/Default
+      ~/.hab/sessions/$SESSION_NAME/userdata/Default
 
 # 方法 B: 只复制必要的文件（推荐，更轻量）
-mkdir -p ~/.hba/sessions/$SESSION_NAME/userdata/Default
+mkdir -p ~/.hab/sessions/$SESSION_NAME/userdata/Default
 cp -r ~/Library/Application\ Support/Google/Chrome/Default/Cookies \
-      ~/.hba/sessions/$SESSION_NAME/userdata/Default/
+      ~/.hab/sessions/$SESSION_NAME/userdata/Default/
 cp -r ~/Library/Application\ Support/Google/Chrome/Default/Local\ Storage \
-      ~/.hba/sessions/$SESSION_NAME/userdata/Default/
+      ~/.hab/sessions/$SESSION_NAME/userdata/Default/
 cp -r ~/Library/Application\ Support/Google/Chrome/Default/Session\ Storage \
-      ~/.hba/sessions/$SESSION_NAME/userdata/Default/
+      ~/.hab/sessions/$SESSION_NAME/userdata/Default/
 ```
 
 ### 步骤 4: 使用该 Session

@@ -53,14 +53,14 @@
 **使用流程**：
 ```bash
 # Agent 理解任务后，调用 CLI
-$ hba open https://mail.google.com
-$ hba snapshot -i
+$ hab open https://mail.google.com
+$ hab snapshot -i
 # Agent 分析快照，找到登录按钮是 @e5
-$ hba click @e5
-$ hba snapshot -i
+$ hab click @e5
+$ hab snapshot -i
 # Agent 分析快照，找到输入框是 @e3
-$ hba fill @e3 "user@example.com"
-$ hba press Enter
+$ hab fill @e3 "user@example.com"
+$ hab press Enter
 # ... 循环直到任务完成
 ```
 
@@ -173,7 +173,7 @@ hyper-browser-agent/
 │                                                              │
 │   每次 CLI 调用:                                              │
 │   ┌──────────────────────────────────────────────────────┐  │
-│   │  $ hba --session gmail click @e5                     │  │
+│   │  $ hab --session gmail click @e5                     │  │
 │   │                                                      │  │
 │   │  1. Bun 启动 (~25ms)                                  │  │
 │   │  2. 加载 Session 配置                                  │  │
@@ -225,11 +225,11 @@ hyper-browser-agent/
   "version": "1.0.0",
   "type": "module",
   "bin": {
-    "hba": "src/cli.ts"
+    "hab": "src/cli.ts"
   },
   "scripts": {
     "dev": "bun run src/cli.ts",
-    "build": "bun build --compile --minify src/cli.ts --outfile dist/hba",
+    "build": "bun build --compile --minify src/cli.ts --outfile dist/hab",
     "build:all": "bun run scripts/build-all.ts",
     "test": "bun test",
     "lint": "bunx @biomejs/biome check .",
@@ -264,7 +264,7 @@ hyper-browser-agent/
 ### 4.1 命令总览
 
 ```bash
-hba [全局选项] <命令> [命令选项] [参数]
+hab [全局选项] <命令> [命令选项] [参数]
 ```
 
 ### 4.2 全局选项
@@ -276,40 +276,40 @@ hba [全局选项] <命令> [命令选项] [参数]
 | `--channel` | `-c` | string | `chrome` | 浏览器 (chrome/msedge/chromium) |
 | `--timeout` | `-t` | number | `30000` | 超时时间 (ms) |
 | `--verbose` | `-v` | boolean | `false` | 详细输出 |
-| `--config` | | string | `~/.hba/config.json` | 配置文件路径 |
+| `--config` | | string | `~/.hab/config.json` | 配置文件路径 |
 
 ### 4.3 导航命令
 
 #### `open` - 打开 URL
 
 ```bash
-hba open <url> [选项]
+hab open <url> [选项]
 
 选项:
   --wait-until <state>   等待状态 (load/domcontentloaded/networkidle)
 
 # 示例
-hba open https://google.com
-hba --headed -s gmail open https://mail.google.com
-hba open https://example.com --wait-until networkidle
+hab open https://google.com
+hab --headed -s gmail open https://mail.google.com
+hab open https://example.com --wait-until networkidle
 ```
 
 #### `reload` - 刷新页面
 
 ```bash
-hba reload
+hab reload
 ```
 
 #### `back` - 后退
 
 ```bash
-hba back
+hab back
 ```
 
 #### `forward` - 前进
 
 ```bash
-hba forward
+hab forward
 ```
 
 ### 4.4 操作命令
@@ -317,7 +317,7 @@ hba forward
 #### `click` - 点击元素
 
 ```bash
-hba click <selector>
+hab click <selector>
 
 # selector 格式:
 #   @e1, @e2, ...     - 快照中的元素引用（推荐）
@@ -326,38 +326,38 @@ hba click <selector>
 #   xpath=//button    - XPath
 
 # 示例
-hba click @e5
-hba click "text=Sign in"
-hba click "css=button.primary"
+hab click @e5
+hab click "text=Sign in"
+hab click "css=button.primary"
 ```
 
 #### `fill` - 填充输入（清空后填入）
 
 ```bash
-hba fill <selector> <value>
+hab fill <selector> <value>
 
 # 示例
-hba fill @e3 "test@example.com"
-hba fill "css=#password" "secret123"
+hab fill @e3 "test@example.com"
+hab fill "css=#password" "secret123"
 ```
 
 #### `type` - 键入文本（逐字符，不清空）
 
 ```bash
-hba type <selector> <text> [选项]
+hab type <selector> <text> [选项]
 
 选项:
   --delay <ms>    每个字符间隔 (默认: 0)
 
 # 示例
-hba type @e3 "Hello World"
-hba type @e3 "slow typing" --delay 100
+hab type @e3 "Hello World"
+hab type @e3 "slow typing" --delay 100
 ```
 
 #### `press` - 按键
 
 ```bash
-hba press <key>
+hab press <key>
 
 # 支持的按键:
 #   Enter, Tab, Escape, Backspace, Delete
@@ -365,16 +365,16 @@ hba press <key>
 #   Control+a, Shift+Enter, Meta+c 等组合键
 
 # 示例
-hba press Enter
-hba press Tab
-hba press "Control+a"
-hba press "Meta+Enter"
+hab press Enter
+hab press Tab
+hab press "Control+a"
+hab press "Meta+Enter"
 ```
 
 #### `scroll` - 滚动
 
 ```bash
-hba scroll <direction> [选项]
+hab scroll <direction> [选项]
 
 # direction: up | down | left | right
 
@@ -383,35 +383,35 @@ hba scroll <direction> [选项]
   --selector <sel>    在指定元素内滚动
 
 # 示例
-hba scroll down
-hba scroll down --amount 1000
-hba scroll up --selector "@e10"
+hab scroll down
+hab scroll down --amount 1000
+hab scroll up --selector "@e10"
 ```
 
 #### `hover` - 悬停
 
 ```bash
-hba hover <selector>
+hab hover <selector>
 
 # 示例
-hba hover @e5
-hba hover "css=.dropdown-trigger"
+hab hover @e5
+hab hover "css=.dropdown-trigger"
 ```
 
 #### `select` - 下拉选择
 
 ```bash
-hba select <selector> <value>
+hab select <selector> <value>
 
 # 示例
-hba select @e7 "California"
-hba select "css=#country" "China"
+hab select @e7 "California"
+hab select "css=#country" "China"
 ```
 
 #### `wait` - 等待
 
 ```bash
-hba wait <condition> [选项]
+hab wait <condition> [选项]
 
 # condition:
 #   <ms>              - 等待毫秒数
@@ -423,10 +423,10 @@ hba wait <condition> [选项]
   --timeout <ms>    超时时间
 
 # 示例
-hba wait 2000
-hba wait "selector=.loaded"
-hba wait "hidden=.spinner"
-hba wait navigation
+hab wait 2000
+hab wait "selector=.loaded"
+hab wait "hidden=.spinner"
+hab wait navigation
 ```
 
 ### 4.5 信息获取命令
@@ -434,7 +434,7 @@ hba wait navigation
 #### `snapshot` - 页面快照（核心命令）
 
 ```bash
-hba snapshot [选项]
+hab snapshot [选项]
 
 选项:
   -i, --interactive    仅显示可交互元素（推荐）
@@ -443,9 +443,9 @@ hba snapshot [选项]
   -o, --output <file>  输出到文件
 
 # 示例
-hba snapshot -i              # 最常用：只看可交互元素
-hba snapshot --full          # 查看完整页面结构
-hba snapshot -r -o page.json # 保存原始数据
+hab snapshot -i              # 最常用：只看可交互元素
+hab snapshot --full          # 查看完整页面结构
+hab snapshot -r -o page.json # 保存原始数据
 ```
 
 **输出格式（interactive 模式）**:
@@ -469,7 +469,7 @@ Interactive Elements:
 #### `screenshot` - 截图
 
 ```bash
-hba screenshot [选项]
+hab screenshot [选项]
 
 选项:
   -o, --output <file>   输出文件 (默认: screenshot.png)
@@ -478,28 +478,28 @@ hba screenshot [选项]
   --quality <n>         JPEG 质量 1-100
 
 # 示例
-hba screenshot
-hba screenshot -o page.png
-hba screenshot --full-page -o full.png
-hba screenshot --selector "@e5" -o button.png
+hab screenshot
+hab screenshot -o page.png
+hab screenshot --full-page -o full.png
+hab screenshot --selector "@e5" -o button.png
 ```
 
 #### `evaluate` - 执行 JavaScript
 
 ```bash
-hba evaluate <script>
+hab evaluate <script>
 
 # 示例
-hba evaluate "document.title"
-hba evaluate "window.location.href"
-hba evaluate "document.querySelectorAll('a').length"
-hba evaluate "window.scrollTo(0, document.body.scrollHeight)"
+hab evaluate "document.title"
+hab evaluate "window.location.href"
+hab evaluate "document.querySelectorAll('a').length"
+hab evaluate "window.scrollTo(0, document.body.scrollHeight)"
 ```
 
 #### `url` - 获取当前 URL
 
 ```bash
-hba url
+hab url
 
 # 输出
 https://mail.google.com/mail/u/0/#inbox
@@ -508,7 +508,7 @@ https://mail.google.com/mail/u/0/#inbox
 #### `title` - 获取页面标题
 
 ```bash
-hba title
+hab title
 
 # 输出
 Inbox - Gmail
@@ -517,16 +517,16 @@ Inbox - Gmail
 #### `content` - 获取页面文本内容
 
 ```bash
-hba content [选项]
+hab content [选项]
 
 选项:
   --selector <sel>   只获取指定元素的文本
   --max-length <n>   最大字符数 (默认: 10000)
 
 # 示例
-hba content
-hba content --selector "article"
-hba content --max-length 5000
+hab content
+hab content --selector "article"
+hab content --max-length 5000
 ```
 
 ### 4.6 会话管理命令
@@ -534,7 +534,7 @@ hba content --max-length 5000
 #### `sessions` - 列出所有 Session
 
 ```bash
-hba sessions [选项]
+hab sessions [选项]
 
 选项:
   --json    JSON 格式输出
@@ -549,15 +549,15 @@ github      stopped   -          -                            2 hours ago
 #### `close` - 关闭 Session
 
 ```bash
-hba close [选项]
+hab close [选项]
 
 选项:
   --all    关闭所有 Session
 
 # 示例
-hba -s gmail close    # 关闭指定 Session
-hba close             # 关闭当前 Session
-hba close --all       # 关闭所有
+hab -s gmail close    # 关闭指定 Session
+hab close             # 关闭当前 Session
+hab close --all       # 关闭所有
 ```
 
 ### 4.7 配置命令
@@ -566,21 +566,21 @@ hba close --all       # 关闭所有
 
 ```bash
 # 查看所有配置
-hba config list
+hab config list
 
 # 获取配置
-hba config get timeout
+hab config get timeout
 
 # 设置配置
-hba config set timeout 60000
-hba config set channel msedge
-hba config set headed true
+hab config set timeout 60000
+hab config set channel msedge
+hab config set headed true
 ```
 
 #### `version` - 版本信息
 
 ```bash
-hba version
+hab version
 
 # 输出
 hyperagentbrowser v1.0.0
@@ -603,7 +603,7 @@ Control web browsers through CLI commands for automation tasks.
 
 ## Overview
 
-hyperagentbrowser (hba) is a browser automation CLI that lets you:
+hyperagentbrowser (hab) is a browser automation CLI that lets you:
 - Navigate web pages
 - Interact with elements (click, fill, type)
 - Extract page information via snapshots
@@ -611,40 +611,40 @@ hyperagentbrowser (hba) is a browser automation CLI that lets you:
 
 ## Core Workflow
 
-1. **Open a page**: `hba open <url>`
-2. **Get snapshot**: `hba snapshot -i` to see interactive elements
+1. **Open a page**: `hab open <url>`
+2. **Get snapshot**: `hab snapshot -i` to see interactive elements
 3. **Analyze snapshot**: Find target element references (@e1, @e2, etc.)
-4. **Execute action**: `hba click @e5` or `hba fill @e3 "text"`
+4. **Execute action**: `hab click @e5` or `hab fill @e3 "text"`
 5. **Repeat** until task is complete
 
 ## Commands Quick Reference
 
 ### Navigation
-- `hba open <url>` - Open URL
-- `hba reload` - Refresh page
-- `hba back` / `hba forward` - Navigate history
+- `hab open <url>` - Open URL
+- `hab reload` - Refresh page
+- `hab back` / `hab forward` - Navigate history
 
 ### Actions
-- `hba click <selector>` - Click element
-- `hba fill <selector> <value>` - Fill input (clears first)
-- `hba type <selector> <text>` - Type text (no clear)
-- `hba press <key>` - Press key (Enter, Tab, Escape, etc.)
-- `hba scroll down|up` - Scroll page
-- `hba hover <selector>` - Hover over element
-- `hba select <selector> <value>` - Select dropdown option
-- `hba wait <ms|selector=...>` - Wait for condition
+- `hab click <selector>` - Click element
+- `hab fill <selector> <value>` - Fill input (clears first)
+- `hab type <selector> <text>` - Type text (no clear)
+- `hab press <key>` - Press key (Enter, Tab, Escape, etc.)
+- `hab scroll down|up` - Scroll page
+- `hab hover <selector>` - Hover over element
+- `hab select <selector> <value>` - Select dropdown option
+- `hab wait <ms|selector=...>` - Wait for condition
 
 ### Information
-- `hba snapshot -i` - Get interactive elements (MOST IMPORTANT)
-- `hba screenshot` - Take screenshot
-- `hba url` - Get current URL
-- `hba title` - Get page title
-- `hba content` - Get page text
+- `hab snapshot -i` - Get interactive elements (MOST IMPORTANT)
+- `hab screenshot` - Take screenshot
+- `hab url` - Get current URL
+- `hab title` - Get page title
+- `hab content` - Get page text
 
 ### Session
-- `hba --session <name> <cmd>` - Use named session
-- `hba sessions` - List sessions
-- `hba close` - Close browser
+- `hab --session <name> <cmd>` - Use named session
+- `hab sessions` - List sessions
+- `hab close` - Close browser
 
 ## Selector Format
 
@@ -657,43 +657,43 @@ hyperagentbrowser (hba) is a browser automation CLI that lets you:
 
 ### Login to a website
 ```bash
-hba --headed -s mysite open https://example.com/login
-hba snapshot -i
+hab --headed -s mysite open https://example.com/login
+hab snapshot -i
 # Output shows: @e3 [textbox] "Email", @e4 [textbox] "Password", @e5 [button] "Sign in"
-hba fill @e3 "user@example.com"
-hba fill @e4 "password123"
-hba click @e5
-hba wait navigation
-hba snapshot -i
+hab fill @e3 "user@example.com"
+hab fill @e4 "password123"
+hab click @e5
+hab wait navigation
+hab snapshot -i
 # Verify login success
 ```
 
 ### Search on Google
 ```bash
-hba open https://google.com
-hba snapshot -i
+hab open https://google.com
+hab snapshot -i
 # Output: @e1 [textbox] "Search"
-hba fill @e1 "bun javascript runtime"
-hba press Enter
-hba wait "selector=.g"
-hba snapshot -i
+hab fill @e1 "bun javascript runtime"
+hab press Enter
+hab wait "selector=.g"
+hab snapshot -i
 ```
 
 ### Scrape data
 ```bash
-hba -s scraper open https://news.ycombinator.com
-hba snapshot -i
+hab -s scraper open https://news.ycombinator.com
+hab snapshot -i
 # Analyze elements, identify article links
-hba content --selector ".titleline"
+hab content --selector ".titleline"
 ```
 
 ## Tips
 
 1. **Always use `--headed` for debugging** - See what's happening
-2. **Use sessions for login persistence** - `hba -s gmail open ...`
+2. **Use sessions for login persistence** - `hab -s gmail open ...`
 3. **Get snapshot before each action** - Page may have changed
 4. **Use `@eN` selectors** - More reliable than CSS/XPath
-5. **Wait after navigation** - `hba wait navigation` or `hba wait 2000`
+5. **Wait after navigation** - `hab wait navigation` or `hab wait 2000`
 ```
 
 ### 5.2 Skill 使用方式
@@ -705,18 +705,18 @@ Agent 通过 Bash 工具调用 CLI：
 const url = "https://mail.google.com";
 
 // 1. 打开页面
-await bash(`hba -s gmail --headed open ${url}`);
+await bash(`hab -s gmail --headed open ${url}`);
 
 // 2. 获取快照
-const snapshot = await bash(`hba -s gmail snapshot -i`);
+const snapshot = await bash(`hab -s gmail snapshot -i`);
 
 // 3. Agent 分析快照，决定下一步
 // 假设找到登录按钮是 @e5
-await bash(`hba -s gmail click @e5`);
+await bash(`hab -s gmail click @e5`);
 
 // 4. 等待并获取新快照
-await bash(`hba -s gmail wait 2000`);
-const newSnapshot = await bash(`hba -s gmail snapshot -i`);
+await bash(`hab -s gmail wait 2000`);
+const newSnapshot = await bash(`hab -s gmail snapshot -i`);
 
 // 5. 继续循环...
 ```
@@ -727,7 +727,7 @@ const newSnapshot = await bash(`hba -s gmail snapshot -i`);
 
 ### 6.1 配置文件
 
-**路径**: `~/.hba/config.json`
+**路径**: `~/.hab/config.json`
 
 ```json
 {
@@ -739,7 +739,7 @@ const newSnapshot = await bash(`hba -s gmail snapshot -i`);
     "timeout": 30000
   },
   "sessions": {
-    "dataDir": "~/.hba/sessions"
+    "dataDir": "~/.hab/sessions"
   },
   "browser": {
     "args": [
@@ -760,12 +760,12 @@ const newSnapshot = await bash(`hba -s gmail snapshot -i`);
 
 | 变量 | 描述 | 示例 |
 |------|------|------|
-| `HBA_CONFIG` | 配置文件路径 | `~/.hba/config.json` |
-| `HBA_SESSION` | 默认 Session | `default` |
-| `HBA_HEADED` | 默认显示浏览器 | `true` |
-| `HBA_CHANNEL` | 浏览器通道 | `chrome` |
-| `HBA_TIMEOUT` | 默认超时 | `30000` |
-| `HBA_DEBUG` | 调试模式 | `true` |
+| `HAB_CONFIG` | 配置文件路径 | `~/.hab/config.json` |
+| `HAB_SESSION` | 默认 Session | `default` |
+| `HAB_HEADED` | 默认显示浏览器 | `true` |
+| `HAB_CHANNEL` | 浏览器通道 | `chrome` |
+| `HAB_TIMEOUT` | 默认超时 | `30000` |
+| `HAB_DEBUG` | 调试模式 | `true` |
 
 ### 6.3 配置优先级
 
@@ -794,10 +794,10 @@ interface Session {
 }
 ```
 
-**存储路径**: `~/.hba/sessions/<session-name>/`
+**存储路径**: `~/.hab/sessions/<session-name>/`
 
 ```
-~/.hba/sessions/gmail/
+~/.hab/sessions/gmail/
 ├── userdata/           # Chrome UserData
 │   ├── Default/
 │   │   ├── Cookies
@@ -859,7 +859,7 @@ Interactive Elements:
 **错误输出**:
 ```
 Error: Element not found: @e99
-  Hint: Run 'hba snapshot -i' to see available elements
+  Hint: Run 'hab snapshot -i' to see available elements
 ```
 
 ---
@@ -877,17 +877,17 @@ class HBAError extends Error {
 // 具体错误
 class SessionNotFoundError extends HBAError {
   code = 'SESSION_NOT_FOUND';
-  hint = "Run 'hba sessions' to see available sessions";
+  hint = "Run 'hab sessions' to see available sessions";
 }
 
 class ElementNotFoundError extends HBAError {
   code = 'ELEMENT_NOT_FOUND';
-  hint = "Run 'hba snapshot -i' to see available elements";
+  hint = "Run 'hab snapshot -i' to see available elements";
 }
 
 class BrowserNotRunningError extends HBAError {
   code = 'BROWSER_NOT_RUNNING';
-  hint = "Run 'hba open <url>' first";
+  hint = "Run 'hab open <url>' first";
 }
 
 class TimeoutError extends HBAError {
@@ -908,19 +908,19 @@ class SelectorError extends HBAError {
 ### 8.2 错误输出格式
 
 ```bash
-$ hba click @e99
+$ hab click @e99
 Error: Element not found: @e99
-  Hint: Run 'hba snapshot -i' to see available elements
+  Hint: Run 'hab snapshot -i' to see available elements
   Code: ELEMENT_NOT_FOUND
 
-$ hba -s nonexistent click @e1
+$ hab -s nonexistent click @e1
 Error: Session 'nonexistent' not found
-  Hint: Run 'hba sessions' to see available sessions
+  Hint: Run 'hab sessions' to see available sessions
   Code: SESSION_NOT_FOUND
 
-$ hba fill @e3 "test"
+$ hab fill @e3 "test"
 Error: Browser not running
-  Hint: Run 'hba open <url>' first
+  Hint: Run 'hab open <url>' first
   Code: BROWSER_NOT_RUNNING
 ```
 
@@ -944,14 +944,14 @@ Error: Browser not running
 
 ```bash
 # 每个 Session 独立的 UserData 目录
-~/.hba/sessions/
+~/.hab/sessions/
 ├── default/userdata/    # 默认 Session
 ├── gmail/userdata/      # Gmail Session
 ├── github/userdata/     # GitHub Session
 └── ...
 
 # 权限
-chmod 700 ~/.hba/sessions/
+chmod 700 ~/.hab/sessions/
 ```
 
 ### 9.2 Evaluate 安全限制
@@ -1023,12 +1023,12 @@ async function connectOrLaunch(session: Session) {
 
 ```bash
 # 编译成 ~50MB 单文件
-bun build --compile --minify src/cli.ts --outfile dist/hba
+bun build --compile --minify src/cli.ts --outfile dist/hab
 
 # 跨平台
-bun build --compile --target=bun-darwin-arm64 src/cli.ts --outfile dist/hba-macos-arm64
-bun build --compile --target=bun-linux-x64 src/cli.ts --outfile dist/hba-linux-x64
-bun build --compile --target=bun-windows-x64 src/cli.ts --outfile dist/hba-windows.exe
+bun build --compile --target=bun-darwin-arm64 src/cli.ts --outfile dist/hab-macos-arm64
+bun build --compile --target=bun-linux-x64 src/cli.ts --outfile dist/hab-linux-x64
+bun build --compile --target=bun-windows-x64 src/cli.ts --outfile dist/hab-windows.exe
 ```
 
 ---
@@ -1123,8 +1123,8 @@ bun run build:all
 bun add -g hyper-browser-agent
 
 # 方式 2: 下载编译好的二进制
-curl -fsSL https://github.com/.../releases/download/v1.0.0/hba-darwin-arm64 -o /usr/local/bin/hba
-chmod +x /usr/local/bin/hba
+curl -fsSL https://github.com/.../releases/download/v1.0.0/hab-darwin-arm64 -o /usr/local/bin/hab
+chmod +x /usr/local/bin/hab
 
 # 方式 3: Homebrew (macOS)
 brew install hyper-browser-agent
@@ -1168,7 +1168,7 @@ brew install hyper-browser-agent
 ### 14.3 常见问题
 
 **Q: 如何保持登录状态？**
-A: 使用命名 Session：`hba -s gmail open https://mail.google.com`，登录后关闭，下次使用同一 Session 即可。
+A: 使用命名 Session：`hab -s gmail open https://mail.google.com`，登录后关闭，下次使用同一 Session 即可。
 
 **Q: 如何处理验证码/人机验证？**
 A: 使用 `--headed` 模式手动处理，或使用第三方验证码服务。

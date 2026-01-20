@@ -41,7 +41,7 @@ const DEFAULT_CONFIG: Config = {
     timeout: 30000,
   },
   sessions: {
-    dataDir: join(homedir(), ".hba", "sessions"),
+    dataDir: join(homedir(), ".hab", "sessions"),
   },
   browser: {
     args: ["--disable-blink-features=AutomationControlled"],
@@ -62,11 +62,11 @@ const DEFAULT_CONFIG: Config = {
 };
 
 export function getConfigPath(): string {
-  const envPath = process.env.HBA_CONFIG;
+  const envPath = process.env.HAB_CONFIG;
   if (envPath) {
     return envPath;
   }
-  return join(homedir(), ".hba", "config.json");
+  return join(homedir(), ".hab", "config.json");
 }
 
 export async function loadConfig(): Promise<Config> {

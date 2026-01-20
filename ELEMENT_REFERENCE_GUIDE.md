@@ -6,8 +6,8 @@ hyperagentbrowser 现在支持使用 `@e1`, `@e2` 等引用来操作页面元素
 
 ## 工作原理
 
-1. **获取快照**: `hba snapshot -i` 扫描页面，为每个可交互元素生成 `@eN` 引用
-2. **映射存储**: 引用和实际 CSS 选择器的映射保存在 `~/.hba/sessions/<session>/element-mappings.json`
+1. **获取快照**: `hab snapshot -i` 扫描页面，为每个可交互元素生成 `@eN` 引用
+2. **映射存储**: 引用和实际 CSS 选择器的映射保存在 `~/.hab/sessions/<session>/element-mappings.json`
 3. **使用引用**: 在后续命令中使用 `@e1` 等引用来操作元素
 
 ## 完整工作流示例
@@ -109,7 +109,7 @@ bun dev -- -s test close
 元素引用映射存储在每个 session 的目录中：
 
 ```
-~/.hba/sessions/<session-name>/
+~/.hab/sessions/<session-name>/
 ├── userdata/                  # Chrome UserData
 ├── session.json               # Session 元数据
 └── element-mappings.json      # @eN 引用映射
@@ -157,11 +157,11 @@ bun dev -- -s mysession snapshot -i
 ```bash
 # 如果引用不存在
 $ bun dev -- -s test click @e99
-Error: Element reference @e99 not found. Run 'hba snapshot -i' to update element references.
+Error: Element reference @e99 not found. Run 'hab snapshot -i' to update element references.
 
 # 如果未运行过 snapshot
 $ bun dev -- -s test click @e1
-Error: Element reference @e1 requires a snapshot first. Run 'hba snapshot -i' to generate element references.
+Error: Element reference @e1 requires a snapshot first. Run 'hab snapshot -i' to generate element references.
 ```
 
 ## AI Agent 集成
@@ -171,10 +171,10 @@ Error: Element reference @e1 requires a snapshot first. Run 'hba snapshot -i' to
 ```markdown
 ## 使用流程
 
-1. 打开页面: `hba open <url>`
-2. 获取快照: `hba snapshot -i`
+1. 打开页面: `hab open <url>`
+2. 获取快照: `hab snapshot -i`
 3. 分析快照找到目标元素的引用（如 @e5）
-4. 执行操作: `hba click @e5`
+4. 执行操作: `hab click @e5`
 5. 重复步骤 2-4 直到任务完成
 ```
 

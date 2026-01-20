@@ -206,7 +206,7 @@
 ❌ agent-browser state save <path>
 ❌ agent-browser state load <path>
 ```
-**影响**: 快速恢复登录状态（注：hba 通过 session 机制已实现类似功能）
+**影响**: 快速恢复登录状态（注：hab 通过 session 机制已实现类似功能）
 
 #### 23. 地理位置等高级设置
 ```bash
@@ -263,7 +263,7 @@
 1. 先实现 `src/commands/` 下的命令函数
 2. 在 `src/daemon/server.ts` 中注册命令
 3. 在 `src/cli.ts` 中添加 CLI 定义
-4. 更新 `hba.skill.md` 文档
+4. 更新 `hab.skill.md` 文档
 5. 添加测试用例
 
 ## 当前 HBA 的差异化优势

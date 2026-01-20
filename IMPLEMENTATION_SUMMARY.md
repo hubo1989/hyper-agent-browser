@@ -1,4 +1,4 @@
-# hyperagentbrowser (hba) - 功能完成总结
+# hyperagentbrowser (hab) - 功能完成总结
 
 ## 任务完成情况
 
@@ -71,7 +71,7 @@
 - ✅ 交互元素过滤
 
 **配置系统**
-- ✅ `~/.hba/config.json`
+- ✅ `~/.hab/config.json`
 - ✅ 环境变量支持
 - ✅ 配置优先级
 - ✅ Zod 验证

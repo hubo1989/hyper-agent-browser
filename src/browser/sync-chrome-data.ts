@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 
 /**
- * 同步系统 Chrome Profile 数据到 hba session
+ * 同步系统 Chrome Profile 数据到 hab session
  * 只复制登录凭证和 Cookies，不复制扩展（避免冲突）
  */
 export function syncChromeData(targetUserDataDir: string): void {

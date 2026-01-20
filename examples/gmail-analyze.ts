@@ -11,7 +11,7 @@ import { SnapshotFormatter } from "../src/snapshot/formatter";
 
 async function main() {
   const sessionName = "gmail";
-  const sessionDir = join(homedir(), ".hba", "sessions", sessionName);
+  const sessionDir = join(homedir(), ".hab", "sessions", sessionName);
   const userDataDir = join(sessionDir, "userdata");
 
   console.log("🚀 启动浏览器...");

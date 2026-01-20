@@ -4,11 +4,11 @@
 import { $ } from "bun";
 
 const platforms = [
-  { target: "bun-darwin-arm64", output: "hba-macos-arm64" },
-  { target: "bun-darwin-x64", output: "hba-macos-x64" },
-  { target: "bun-linux-x64", output: "hba-linux-x64" },
-  { target: "bun-linux-arm64", output: "hba-linux-arm64" },
-  { target: "bun-windows-x64", output: "hba-windows-x64.exe" },
+  { target: "bun-darwin-arm64", output: "hab-macos-arm64" },
+  { target: "bun-darwin-x64", output: "hab-macos-x64" },
+  { target: "bun-linux-x64", output: "hab-linux-x64" },
+  { target: "bun-linux-arm64", output: "hab-linux-arm64" },
+  { target: "bun-windows-x64", output: "hab-windows-x64.exe" },
 ];
 
 console.log("🚀 Building for all platforms...\n");

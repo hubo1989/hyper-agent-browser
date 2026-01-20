@@ -4,7 +4,7 @@ Control web browsers through CLI commands for automation tasks.
 
 ## Overview
 
-hyperagentbrowser (hba) is a browser automation CLI that lets you:
+hyperagentbrowser (hab) is a browser automation CLI that lets you:
 - Navigate web pages
 - Interact with elements (click, fill, type)
 - Extract page information via snapshots
@@ -12,34 +12,34 @@ hyperagentbrowser (hba) is a browser automation CLI that lets you:
 
 ## Core Workflow
 
-1. **Open a page**: `hba open <url>`
-2. **Get snapshot**: `hba snapshot -i` to see interactive elements
+1. **Open a page**: `hab open <url>`
+2. **Get snapshot**: `hab snapshot -i` to see interactive elements
 3. **Analyze snapshot**: Find target element references (@e1, @e2, etc.)
-4. **Execute action**: `hba click @e5` or `hba fill @e3 "text"`
+4. **Execute action**: `hab click @e5` or `hab fill @e3 "text"`
 5. **Repeat** until task is complete
 
 ## Commands Quick Reference
 
 ### Navigation
-- `hba open <url>` - Open URL
-- `hba reload` - Refresh page
-- `hba back` / `hba forward` - Navigate history
+- `hab open <url>` - Open URL
+- `hab reload` - Refresh page
+- `hab back` / `hab forward` - Navigate history
 
 ### Actions
-- `hba click <selector>` - Click element
-- `hba fill <selector> <value>` - Fill input (clears first)
-- `hba type <selector> <text>` - Type text (no clear)
-- `hba press <key>` - Press key (Enter, Tab, Escape, etc.)
+- `hab click <selector>` - Click element
+- `hab fill <selector> <value>` - Fill input (clears first)
+- `hab type <selector> <text>` - Type text (no clear)
+- `hab press <key>` - Press key (Enter, Tab, Escape, etc.)
 
 ### Information
-- `hba snapshot -i` - Get interactive elements (MOST IMPORTANT)
-- `hba url` - Get current URL
-- `hba title` - Get page title
+- `hab snapshot -i` - Get interactive elements (MOST IMPORTANT)
+- `hab url` - Get current URL
+- `hab title` - Get page title
 
 ### Session
-- `hba --session <name> <cmd>` - Use named session
-- `hba sessions` - List sessions
-- `hba close` - Close browser
+- `hab --session <name> <cmd>` - Use named session
+- `hab sessions` - List sessions
+- `hab close` - Close browser
 
 ## Selector Format
 
@@ -51,13 +51,13 @@ hyperagentbrowser (hba) is a browser automation CLI that lets you:
 ## Example: Login Flow
 
 ```bash
-hba --headed -s mysite open https://example.com/login
-hba snapshot -i
+hab --headed -s mysite open https://example.com/login
+hab snapshot -i
 # Output shows: @e3 [textbox] "Email", @e4 [textbox] "Password", @e5 [button] "Sign in"
-hba fill @e3 "user@example.com"
-hba fill @e4 "password123"
-hba click @e5
-hba wait navigation
-hba snapshot -i
+hab fill @e3 "user@example.com"
+hab fill @e4 "password123"
+hab click @e5
+hab wait navigation
+hab snapshot -i
 # Verify login success
 ```

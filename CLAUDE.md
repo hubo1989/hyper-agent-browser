@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-**hyperagentbrowser (hba)** - 纯浏览器操作 CLI 工具，供 AI Agent 调用
+**hyperagentbrowser (hab)** - 纯浏览器操作 CLI 工具，供 AI Agent 调用
 
 核心理念：将 AI 决策与浏览器操作分离。CLI 负责确定性的浏览器操作，AI Agent 负责任务理解和决策。
 
@@ -63,7 +63,7 @@ src/
 │   └── formatter.ts       # 格式化输出（@e1, @e2 引用）
 └── utils/
     ├── selector.ts        # 选择器解析（@e1/css=/text=/xpath=）
-    ├── config.ts          # 配置管理（~/.hba/config.json）
+    ├── config.ts          # 配置管理（~/.hab/config.json）
     └── logger.ts          # 日志
 ```
 
@@ -86,7 +86,7 @@ src/
 每个 Session 有独立的 UserData 目录（Cookies/LocalStorage/登录状态）：
 
 ```
-~/.hba/sessions/
+~/.hab/sessions/
 ├── default/
 │   ├── userdata/      # Chrome UserData
 │   └── session.json   # 元数据（wsEndpoint/pid/url）
@@ -101,7 +101,7 @@ src/
 通过可访问性树（Accessibility Tree）提取页面元素，生成 `@e1`, `@e2` 等引用：
 
 ```bash
-$ hba snapshot -i
+$ hab snapshot -i
 URL: https://google.com
 Title: Google
 
@@ -159,11 +159,11 @@ Agent 通过 Bash 工具循环调用 CLI：
 
 ```typescript
 // 示例流程
-await bash(`hba -s gmail open https://mail.google.com`);
-const snapshot = await bash(`hba -s gmail snapshot -i`);
+await bash(`hab -s gmail open https://mail.google.com`);
+const snapshot = await bash(`hab -s gmail snapshot -i`);
 // Agent 分析 snapshot，找到元素 @e5
-await bash(`hba -s gmail click @e5`);
-await bash(`hba -s gmail wait 2000`);
+await bash(`hab -s gmail click @e5`);
+await bash(`hab -s gmail wait 2000`);
 // 循环直到任务完成
 ```
 
@@ -176,7 +176,7 @@ await bash(`hba -s gmail wait 2000`);
 ```typescript
 class ElementNotFoundError extends HBAError {
   code = 'ELEMENT_NOT_FOUND';
-  hint = "Run 'hba snapshot -i' to see available elements";
+  hint = "Run 'hab snapshot -i' to see available elements";
 }
 ```
 
@@ -192,9 +192,9 @@ class ElementNotFoundError extends HBAError {
 
 **优先级**: 命令行参数 > 环境变量 > 配置文件 > 默认值
 
-配置文件位置: `~/.hba/config.json`
+配置文件位置: `~/.hab/config.json`
 
-环境变量: `HBA_CONFIG`, `HBA_SESSION`, `HBA_HEADED`, `HBA_CHANNEL`, `HBA_TIMEOUT`, `HBA_DEBUG`
+环境变量: `HAB_CONFIG`, `HAB_SESSION`, `HAB_HEADED`, `HAB_CHANNEL`, `HAB_TIMEOUT`, `HAB_DEBUG`
 
 ## 版本路线
 

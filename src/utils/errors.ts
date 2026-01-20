@@ -16,7 +16,7 @@ export class SessionNotFoundError extends HBAError {
     super(
       `Session '${sessionName}' not found`,
       "SESSION_NOT_FOUND",
-      "Run 'hba sessions' to see available sessions"
+      "Run 'hab sessions' to see available sessions"
     );
   }
 }
@@ -26,7 +26,7 @@ export class ElementNotFoundError extends HBAError {
     super(
       `Element not found: ${selector}`,
       "ELEMENT_NOT_FOUND",
-      "Run 'hba snapshot -i' to see available elements"
+      "Run 'hab snapshot -i' to see available elements"
     );
   }
 }
@@ -36,7 +36,7 @@ export class BrowserNotRunningError extends HBAError {
     super(
       "Browser not running",
       "BROWSER_NOT_RUNNING",
-      "Run 'hba open <url>' first"
+      "Run 'hab open <url>' first"
     );
   }
 }
@@ -73,7 +73,7 @@ export class SelectorError extends HBAError {
 
 export class ConfigError extends HBAError {
   constructor(message: string) {
-    super(message, "CONFIG_ERROR", "Check ~/.hba/config.json for syntax errors");
+    super(message, "CONFIG_ERROR", "Check ~/.hab/config.json for syntax errors");
   }
 }
 

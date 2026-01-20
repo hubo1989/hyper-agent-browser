@@ -9,7 +9,7 @@ import { homedir } from "node:os";
 
 async function main() {
   const sessionName = "gmail";
-  const sessionDir = join(homedir(), ".hba", "sessions", sessionName);
+  const sessionDir = join(homedir(), ".hab", "sessions", sessionName);
   const userDataDir = join(sessionDir, "userdata");
 
   console.log("🚀 启动浏览器（使用已登录的 Gmail profile）...");

@@ -4,7 +4,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import type { CommandRequest, CommandResponse } from "./server";
 
-const CONFIG_FILE = join(homedir(), ".hba", "daemon.json");
+const CONFIG_FILE = join(homedir(), ".hab", "daemon.json");
 
 export class DaemonClient {
   private host: string = "127.0.0.1";

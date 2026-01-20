@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 导入 Chrome Profile 到 hba Session
+# 导入 Chrome Profile 到 hab Session
 
 set -e
 
@@ -8,7 +8,7 @@ show_usage() {
   cat << EOF
 用法: $0 [选项]
 
-导入 Chrome Profile 到 hba Session，保留 Google 登录状态
+导入 Chrome Profile 到 hab Session，保留 Google 登录状态
 
 选项:
   -s, --session NAME       Session 名称（默认: google-profile）
@@ -82,8 +82,8 @@ if [ ! -d "$CHROME_PROFILE" ]; then
 fi
 
 # 目标路径
-HBA_SESSION_DIR="$HOME/.hba/sessions/$SESSION_NAME"
-TARGET_DIR="$HBA_SESSION_DIR/userdata/Default"
+HAB_SESSION_DIR="$HOME/.hab/sessions/$SESSION_NAME"
+TARGET_DIR="$HAB_SESSION_DIR/userdata/Default"
 
 echo ""
 echo "配置:"
@@ -95,7 +95,7 @@ echo ""
 
 # 创建目录
 mkdir -p "$TARGET_DIR"
-mkdir -p "$HBA_SESSION_DIR"
+mkdir -p "$HAB_SESSION_DIR"
 
 # 复制文件
 if [ "$FULL_COPY" = true ]; then
@@ -117,7 +117,7 @@ else
 fi
 
 # 创建 session.json
-cat > "$HBA_SESSION_DIR/session.json" << EOF
+cat > "$HAB_SESSION_DIR/session.json" << EOF
 {
   "name": "$SESSION_NAME",
   "status": "stopped",

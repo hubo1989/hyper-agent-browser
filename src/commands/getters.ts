@@ -15,14 +15,14 @@ async function getLocator(page: Page, selector: string) {
     case "ref": {
       if (!globalReferenceStore) {
         throw new Error(
-          `Element reference @${parsed.value} requires a snapshot first. Run 'hba snapshot -i' to generate element references.`,
+          `Element reference @${parsed.value} requires a snapshot first. Run 'hab snapshot -i' to generate element references.`,
         );
       }
 
       const actualSelector = globalReferenceStore.get(parsed.value);
       if (!actualSelector) {
         throw new Error(
-          `Element reference @${parsed.value} not found. Run 'hba snapshot -i' to update element references.`,
+          `Element reference @${parsed.value} not found. Run 'hab snapshot -i' to update element references.`,
         );
       }
 

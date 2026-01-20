@@ -11,7 +11,7 @@
 ### 1. 核心架构 (100%)
 
 - [x] **Session 管理系统**
-  - 持久化存储 (~/.hba/sessions/)
+  - 持久化存储 (~/.hab/sessions/)
   - 多会话隔离
   - UserData 目录管理
   - Session 元数据 (session.json)
@@ -95,7 +95,7 @@
 
 ### 6. 配置系统
 
-- [x] 配置文件 (~/.hba/config.json)
+- [x] 配置文件 (~/.hab/config.json)
 - [x] 环境变量支持
 - [x] 配置优先级 (命令行 > 环境变量 > 配置文件 > 默认值)
 
@@ -229,7 +229,7 @@ AI Agent (Claude) → Skill → CLI → Browser
 
 **实现**:
 ```
-~/.hba/sessions/
+~/.hab/sessions/
 ├── gmail/
 │   ├── userdata/              # Cookies, Storage
 │   ├── session.json           # 元数据

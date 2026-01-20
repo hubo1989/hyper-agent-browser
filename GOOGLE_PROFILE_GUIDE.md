@@ -173,7 +173,7 @@ bun dev -- -s gmail close
 
 ```bash
 # 备份包含登录状态的 Session
-tar -czf gmail-session-backup.tar.gz ~/.hba/sessions/gmail/
+tar -czf gmail-session-backup.tar.gz ~/.hab/sessions/gmail/
 
 # 恢复
 tar -xzf gmail-session-backup.tar.gz -C ~/
@@ -184,12 +184,12 @@ tar -xzf gmail-session-backup.tar.gz -C ~/
 1. **Session 目录权限**
    ```bash
    # 确保只有当前用户可以访问
-   chmod 700 ~/.hba/sessions/
-   chmod 700 ~/.hba/sessions/*/
+   chmod 700 ~/.hab/sessions/
+   chmod 700 ~/.hab/sessions/*/
    ```
 
 2. **不要在公共仓库提交 Session**
-   - `.gitignore` 已包含 `~/.hba/` 排除规则
+   - `.gitignore` 已包含 `~/.hab/` 排除规则
    - 不要将 `userdata` 目录提交到版本控制
 
 3. **定期检查登录会话**
@@ -198,7 +198,7 @@ tar -xzf gmail-session-backup.tar.gz -C ~/
    bun dev -- sessions
 
    # 清理不用的 session
-   rm -rf ~/.hba/sessions/old-session-name/
+   rm -rf ~/.hab/sessions/old-session-name/
    ```
 
 ## 🐛 故障排除
@@ -220,12 +220,12 @@ bun dev -- -s gmail --headed open https://accounts.google.com
 
 **解决**:
 ```bash
-chmod -R 700 ~/.hba/sessions/
+chmod -R 700 ~/.hab/sessions/
 ```
 
 ### 问题 3: Session 冲突
 
-**原因**: 同时在系统 Chrome 和 hba 中使用同一个 Profile
+**原因**: 同时在系统 Chrome 和 hab 中使用同一个 Profile
 
 **解决**: 使用复制的 Profile，而不是直接指向系统 Chrome 的 Profile
 

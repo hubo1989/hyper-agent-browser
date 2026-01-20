@@ -7,8 +7,8 @@ import { join } from "node:path";
 
 const DAEMON_PORT = 9527;
 const DAEMON_HOST = "127.0.0.1";
-const PID_FILE = join(homedir(), ".hba", "daemon.pid");
-const CONFIG_FILE = join(homedir(), ".hba", "daemon.json");
+const PID_FILE = join(homedir(), ".hab", "daemon.pid");
+const CONFIG_FILE = join(homedir(), ".hab", "daemon.json");
 
 async function saveDaemonInfo(pid: number, port: number, host: string): Promise<void> {
   const config = { pid, port, host, startedAt: Date.now() };

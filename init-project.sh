@@ -20,11 +20,11 @@ cat > package.json << 'EOF'
   "description": "Pure browser automation CLI for AI Agents",
   "type": "module",
   "bin": {
-    "hba": "src/cli.ts"
+    "hab": "src/cli.ts"
   },
   "scripts": {
     "dev": "bun run src/cli.ts",
-    "build": "bun build --compile --minify src/cli.ts --outfile dist/hba",
+    "build": "bun build --compile --minify src/cli.ts --outfile dist/hab",
     "build:all": "bun run scripts/build-all.ts",
     "test": "bun test",
     "test:unit": "bun test tests/unit",
@@ -142,7 +142,7 @@ Thumbs.db
 *.swo
 
 # Runtime data
-~/.hba/
+~/.hab/
 
 # Local config
 .env
@@ -152,7 +152,7 @@ EOF
 # Create README.md
 echo "📖 Creating README.md..."
 cat > README.md << 'EOF'
-# hyperagentbrowser (hba)
+# hyperagentbrowser (hab)
 
 Pure browser automation CLI for AI Agents.
 
@@ -176,19 +176,19 @@ bun test
 
 ```bash
 # Open a URL
-hba open https://google.com
+hab open https://google.com
 
 # Get interactive elements snapshot
-hba snapshot -i
+hab snapshot -i
 
 # Click an element
-hba click @e1
+hab click @e1
 
 # Fill input
-hba fill @e2 "search query"
+hab fill @e2 "search query"
 
 # Press key
-hba press Enter
+hab press Enter
 ```
 
 See [hyper-agent-browser-spec.md](./hyper-agent-browser-spec.md) for full documentation.
@@ -215,7 +215,7 @@ import { Command } from 'commander';
 const program = new Command();
 
 program
-  .name('hba')
+  .name('hab')
   .description('hyperagentbrowser - Browser automation CLI for AI Agents')
   .version('0.1.0');
 
@@ -263,7 +263,7 @@ export const ConfigSchema = z.object({
 export type Config = z.infer<typeof ConfigSchema>;
 
 export function loadConfig(): Config {
-  // TODO: Load from ~/.hba/config.json
+  // TODO: Load from ~/.hab/config.json
   return {
     version: '1.0',
     defaults: {
@@ -358,7 +358,7 @@ Control web browsers through CLI commands for automation tasks.
 
 ## Overview
 
-hyperagentbrowser (hba) is a browser automation CLI that lets you:
+hyperagentbrowser (hab) is a browser automation CLI that lets you:
 - Navigate web pages
 - Interact with elements (click, fill, type)
 - Extract page information via snapshots
@@ -366,34 +366,34 @@ hyperagentbrowser (hba) is a browser automation CLI that lets you:
 
 ## Core Workflow
 
-1. **Open a page**: `hba open <url>`
-2. **Get snapshot**: `hba snapshot -i` to see interactive elements
+1. **Open a page**: `hab open <url>`
+2. **Get snapshot**: `hab snapshot -i` to see interactive elements
 3. **Analyze snapshot**: Find target element references (@e1, @e2, etc.)
-4. **Execute action**: `hba click @e5` or `hba fill @e3 "text"`
+4. **Execute action**: `hab click @e5` or `hab fill @e3 "text"`
 5. **Repeat** until task is complete
 
 ## Commands Quick Reference
 
 ### Navigation
-- `hba open <url>` - Open URL
-- `hba reload` - Refresh page
-- `hba back` / `hba forward` - Navigate history
+- `hab open <url>` - Open URL
+- `hab reload` - Refresh page
+- `hab back` / `hab forward` - Navigate history
 
 ### Actions
-- `hba click <selector>` - Click element
-- `hba fill <selector> <value>` - Fill input (clears first)
-- `hba type <selector> <text>` - Type text (no clear)
-- `hba press <key>` - Press key (Enter, Tab, Escape, etc.)
+- `hab click <selector>` - Click element
+- `hab fill <selector> <value>` - Fill input (clears first)
+- `hab type <selector> <text>` - Type text (no clear)
+- `hab press <key>` - Press key (Enter, Tab, Escape, etc.)
 
 ### Information
-- `hba snapshot -i` - Get interactive elements (MOST IMPORTANT)
-- `hba url` - Get current URL
-- `hba title` - Get page title
+- `hab snapshot -i` - Get interactive elements (MOST IMPORTANT)
+- `hab url` - Get current URL
+- `hab title` - Get page title
 
 ### Session
-- `hba --session <name> <cmd>` - Use named session
-- `hba sessions` - List sessions
-- `hba close` - Close browser
+- `hab --session <name> <cmd>` - Use named session
+- `hab sessions` - List sessions
+- `hab close` - Close browser
 
 ## Selector Format
 
@@ -405,14 +405,14 @@ hyperagentbrowser (hba) is a browser automation CLI that lets you:
 ## Example: Login Flow
 
 ```bash
-hba --headed -s mysite open https://example.com/login
-hba snapshot -i
+hab --headed -s mysite open https://example.com/login
+hab snapshot -i
 # Output shows: @e3 [textbox] "Email", @e4 [textbox] "Password", @e5 [button] "Sign in"
-hba fill @e3 "user@example.com"
-hba fill @e4 "password123"
-hba click @e5
-hba wait navigation
-hba snapshot -i
+hab fill @e3 "user@example.com"
+hab fill @e4 "password123"
+hab click @e5
+hab wait navigation
+hab snapshot -i
 # Verify login success
 ```
 EOF

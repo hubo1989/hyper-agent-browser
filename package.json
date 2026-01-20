@@ -4,11 +4,11 @@
   "description": "Pure browser automation CLI for AI Agents",
   "type": "module",
   "bin": {
-    "hba": "src/cli.ts"
+    "hab": "src/cli.ts"
   },
   "scripts": {
     "dev": "bun run src/cli.ts",
-    "build": "bun build --compile --minify src/cli.ts --outfile dist/hba",
+    "build": "bun build --compile --minify src/cli.ts --outfile dist/hab",
     "build:all": "bun run scripts/build-all.ts",
     "test": "bun test",
     "test:unit": "bun test tests/unit",

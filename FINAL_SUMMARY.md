@@ -11,7 +11,7 @@
 ### ✅ 核心架构（100%）
 
 - [x] Session 管理系统
-  - [x] 持久化存储（~/.hba/sessions/）
+  - [x] 持久化存储（~/.hab/sessions/）
   - [x] 多会话隔离
   - [x] UserData 目录管理
   - [x] Session 元数据存储
@@ -169,11 +169,11 @@ hyper-agent-browser/
 **示例**:
 ```bash
 # 传统方式
-hba click 'css=button.MuiButton-root.MuiButton-contained.MuiButton-sizeMedium'
+hab click 'css=button.MuiButton-root.MuiButton-contained.MuiButton-sizeMedium'
 
 # hyperagentbrowser 方式
-hba snapshot -i  # 生成引用
-hba click @e5    # 简洁明了
+hab snapshot -i  # 生成引用
+hab click @e5    # 简洁明了
 ```
 
 ### 2. AI Agent 友好设计
@@ -196,7 +196,7 @@ hba click @e5    # 简洁明了
 **实现**: UserData 目录 + Session 元数据
 
 ```bash
-~/.hba/sessions/
+~/.hab/sessions/
 ├── gmail/                    # 个人邮箱
 │   ├── userdata/            # Cookies, Storage
 │   ├── session.json         # 元数据

@@ -12,7 +12,7 @@ import { existsSync } from "node:fs";
 
 async function main() {
   const sessionName = "twitter";
-  const sessionDir = join(homedir(), ".hba", "sessions", sessionName);
+  const sessionDir = join(homedir(), ".hab", "sessions", sessionName);
   const userDataDir = join(sessionDir, "userdata");
 
   // 创建目录

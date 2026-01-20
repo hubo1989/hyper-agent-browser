@@ -1,6 +1,6 @@
 # hyperagentbrowser Spec 功能完成情况
 
-**项目**: hyperagentbrowser (hba)
+**项目**: hyperagentbrowser (hab)
 **日期**: 2026-01-15
 **版本**: v0.1.0
 
@@ -55,7 +55,7 @@
 ### 2. 核心系统实现
 
 #### Session 管理
-- ✅ Session 持久化（`~/.hba/sessions/`）
+- ✅ Session 持久化（`~/.hab/sessions/`）
 - ✅ UserData 目录隔离
 - ✅ Session 状态管理（running/stopped）
 - ✅ Session 元数据存储（session.json）
@@ -75,8 +75,8 @@
 - ✅ `xpath=` XPath
 
 #### 配置系统
-- ✅ 配置文件支持（`~/.hba/config.json`）
-- ✅ 环境变量支持（HBA_*）
+- ✅ 配置文件支持（`~/.hab/config.json`）
+- ✅ 环境变量支持（HAB_*）
 - ✅ 配置优先级：CLI 参数 > 环境变量 > 配置文件 > 默认值
 - ✅ Zod 验证
 

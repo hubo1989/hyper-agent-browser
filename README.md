@@ -1,4 +1,4 @@
-# hyperagentbrowser (hba)
+# hyperagentbrowser (hab)
 
 **纯浏览器自动化 CLI，专为 AI Agent 设计**
 
@@ -76,11 +76,11 @@ bun dev -- -s gmail snapshot -i
 
 ```bash
 # 传统方式（繁琐）
-hba click 'css=button.MuiButton-root.MuiButton-contained'
+hab click 'css=button.MuiButton-root.MuiButton-contained'
 
 # hyperagentbrowser 方式（简单）
-hba snapshot -i  # 生成引用
-hba click @e5    # 使用引用
+hab snapshot -i  # 生成引用
+hab click @e5    # 使用引用
 ```
 
 ### Session 管理
@@ -132,10 +132,10 @@ cp skills/hyper-browser.md ~/.claude/skills/
 ```
 
 **使用流程**:
-1. Agent 打开网页：`hba open <url>`
-2. Agent 获取快照：`hba snapshot -i`
+1. Agent 打开网页：`hab open <url>`
+2. Agent 获取快照：`hab snapshot -i`
 3. Agent 分析快照，找到目标元素 `@eN`
-4. Agent 执行操作：`hba click @eN`
+4. Agent 执行操作：`hab click @eN`
 5. 重复直到任务完成
 
 ## 📋 选择器格式

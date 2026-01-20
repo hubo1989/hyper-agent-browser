@@ -9,7 +9,7 @@ const program = new Command();
 const daemonClient = new DaemonClient();
 
 program
-  .name("hba")
+  .name("hab")
   .description("hyperagentbrowser - Browser automation CLI for AI Agents")
   .version("0.2.0");
 

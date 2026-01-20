@@ -2,7 +2,7 @@
 
 ## Skill Overview
 
-HBA 是纯浏览器操作 CLI 工具，用于 AI Agent 执行确定性的浏览器自动化任务。核心理念：AI 负责决策，hba 负责执行。
+HBA 是纯浏览器操作 CLI 工具，用于 AI Agent 执行确定性的浏览器自动化任务。核心理念：AI 负责决策，hab 负责执行。
 
 ## Installation & Setup
 
@@ -16,7 +16,7 @@ bun install
 
 ## Browser Detection & Selection
 
-在首次使用 hba 前，必须检测系统可用的浏览器并选择合适的 channel。
+在首次使用 hab 前，必须检测系统可用的浏览器并选择合适的 channel。
 
 ### Step 1: 检测系统浏览器
 
@@ -178,7 +178,7 @@ bun run src/cli.ts title
 
 ## Selector Types
 
-hba 支持 4 种选择器格式：
+hab 支持 4 种选择器格式：
 
 1. **@e1** - 快照引用（推荐，AI 使用）
    ```bash
@@ -303,7 +303,7 @@ bun run src/cli.ts -t 60000 open https://slow-site.com
 bun run src/cli.ts daemon restart
 
 # 如果 session 损坏，删除重建
-rm -rf ~/.hba/sessions/default
+rm -rf ~/.hab/sessions/default
 bun run src/cli.ts open https://example.com
 ```
 
@@ -311,13 +311,13 @@ bun run src/cli.ts open https://example.com
 
 ```bash
 # 开启扩展加载（实验性，可能不稳定）
-export HBA_LOAD_EXTENSIONS=true
+export HAB_LOAD_EXTENSIONS=true
 
 # 同步系统 Chrome 数据（有限效果，Keychain 加密问题）
-export HBA_SYNC_CHROME=true
+export HAB_SYNC_CHROME=true
 
 # 调试模式
-export HBA_DEBUG=true
+export HAB_DEBUG=true
 ```
 
 ## Advanced Scenarios
@@ -392,10 +392,10 @@ bun run src/cli.ts click @e20  # 确认按钮
 lsof -i :9527
 
 # 查看 daemon 日志
-cat ~/.hba/daemon.log
+cat ~/.hab/daemon.log
 
 # 手动清理
-rm ~/.hba/daemon.pid ~/.hba/daemon.json
+rm ~/.hab/daemon.pid ~/.hab/daemon.json
 bun run src/cli.ts daemon start
 ```
 
@@ -412,7 +412,7 @@ killall "Google Chrome" "Microsoft Edge" "Chromium"
 ### Session 数据损坏
 ```bash
 # 备份旧数据
-mv ~/.hba/sessions/default ~/.hba/sessions/default.bak
+mv ~/.hab/sessions/default ~/.hab/sessions/default.bak
 
 # 重建 session
 bun run src/cli.ts open https://example.com

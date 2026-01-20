@@ -99,10 +99,10 @@ bun dev -- --channel msedge --headed open https://example.com
 
 ### 权限错误
 
-确保 ~/.hba/sessions/ 目录有正确的权限：
+确保 ~/.hab/sessions/ 目录有正确的权限：
 
 ```bash
-chmod 700 ~/.hba/sessions/
+chmod 700 ~/.hab/sessions/
 ```
 
 ## 安装 Skill 文件
