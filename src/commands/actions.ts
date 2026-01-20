@@ -206,7 +206,11 @@ export async function focus(page: Page, selector: string): Promise<void> {
   await locator.focus();
 }
 
-export async function upload(page: Page, selector: string, files: string | string[]): Promise<void> {
+export async function upload(
+  page: Page,
+  selector: string,
+  files: string | string[],
+): Promise<void> {
   const locator = await getLocator(page, selector);
   const filePaths = Array.isArray(files) ? files : [files];
   await locator.setInputFiles(filePaths);
@@ -217,7 +221,11 @@ export async function scrollIntoView(page: Page, selector: string): Promise<void
   await locator.scrollIntoViewIfNeeded();
 }
 
-export async function drag(page: Page, sourceSelector: string, targetSelector: string): Promise<void> {
+export async function drag(
+  page: Page,
+  sourceSelector: string,
+  targetSelector: string,
+): Promise<void> {
   const source = await getLocator(page, sourceSelector);
   const target = await getLocator(page, targetSelector);
   await source.dragTo(target);

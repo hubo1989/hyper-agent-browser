@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from "bun:test";
+import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { $ } from "bun";
 
 describe("Integration Tests - Element References", () => {
@@ -34,7 +34,8 @@ describe("Integration Tests - Element References", () => {
   });
 
   it("should take screenshot", async () => {
-    const output = await $`bun run src/cli.ts -s ${SESSION} screenshot -o /tmp/test-screenshot.png`.text();
+    const output =
+      await $`bun run src/cli.ts -s ${SESSION} screenshot -o /tmp/test-screenshot.png`.text();
     expect(output).toContain("Screenshot saved");
   });
 });

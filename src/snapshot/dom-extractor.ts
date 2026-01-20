@@ -105,7 +105,7 @@ export class DomSnapshotExtractor {
         let selector = el.tagName.toLowerCase();
         let current: Element | null = el;
 
-        while (current && current.parentElement) {
+        while (current?.parentElement) {
           const parent: Element = current.parentElement;
           const siblings = Array.from(parent.children);
           const index = siblings.indexOf(current);
@@ -115,7 +115,7 @@ export class DomSnapshotExtractor {
           }
 
           current = parent;
-          if (current && current.id) {
+          if (current?.id) {
             selector = `#${current.id} ${selector}`;
             break;
           }

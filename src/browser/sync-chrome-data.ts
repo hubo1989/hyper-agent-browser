@@ -1,6 +1,6 @@
-import { existsSync, copyFileSync } from "node:fs";
-import { join } from "node:path";
+import { copyFileSync, existsSync } from "node:fs";
 import { homedir } from "node:os";
+import { join } from "node:path";
 
 /**
  * 同步系统 Chrome Profile 数据到 hab session
@@ -10,7 +10,7 @@ export function syncChromeData(targetUserDataDir: string): void {
   try {
     const systemChromeProfile = join(
       homedir(),
-      "Library/Application Support/Google/Chrome/Default"
+      "Library/Application Support/Google/Chrome/Default",
     );
 
     if (!existsSync(systemChromeProfile)) {
@@ -20,12 +20,12 @@ export function syncChromeData(targetUserDataDir: string): void {
 
     // 需要同步的文件列表
     const filesToSync = [
-      "Cookies",          // Cookie 数据
-      "Login Data",       // 登录凭证
-      "Preferences",      // Chrome 偏好设置
-      "Web Data",         // 表单自动填充数据
-      "Network",          // 网络相关数据
-      "Local Storage",    // LocalStorage 数据
+      "Cookies", // Cookie 数据
+      "Login Data", // 登录凭证
+      "Preferences", // Chrome 偏好设置
+      "Web Data", // 表单自动填充数据
+      "Network", // 网络相关数据
+      "Local Storage", // LocalStorage 数据
     ];
 
     let syncedCount = 0;

@@ -1,4 +1,4 @@
-import { loadConfig, getConfigValue, setConfigValue } from "../utils/config";
+import { getConfigValue, loadConfig, setConfigValue } from "../utils/config";
 
 export async function listConfig(): Promise<string> {
   const config = await loadConfig();
@@ -28,7 +28,7 @@ export async function setConfig(key: string, value: string): Promise<string> {
     parsedValue = true;
   } else if (value === "false") {
     parsedValue = false;
-  } else if (!isNaN(Number(value))) {
+  } else if (!Number.isNaN(Number(value))) {
     parsedValue = Number(value);
   } else {
     try {

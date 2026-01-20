@@ -1,8 +1,8 @@
-import { z } from "zod";
-import { join } from "node:path";
-import { homedir } from "node:os";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { z } from "zod";
 
 export const ConfigSchema = z.object({
   version: z.string(),
@@ -142,7 +142,7 @@ export async function setConfigValue(key: string, value: unknown): Promise<void>
   if (!ALLOWED_CONFIG_KEYS.includes(key)) {
     throw new Error(
       `Config key '${key}' cannot be modified via CLI. ` +
-      `Allowed keys: ${ALLOWED_CONFIG_KEYS.join(", ")}`
+        `Allowed keys: ${ALLOWED_CONFIG_KEYS.join(", ")}`,
     );
   }
 

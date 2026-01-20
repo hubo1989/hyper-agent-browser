@@ -1,12 +1,12 @@
-import { BrowserPool } from "./browser-pool";
+import * as actionCommands from "../commands/actions";
+import * as advancedCommands from "../commands/advanced";
+import * as getterCommands from "../commands/getters";
+import * as infoCommands from "../commands/info";
+import * as navigationCommands from "../commands/navigation";
 import { SessionManager } from "../session/manager";
 import { ReferenceStore } from "../snapshot/reference-store";
-import * as navigationCommands from "../commands/navigation";
-import * as actionCommands from "../commands/actions";
-import * as infoCommands from "../commands/info";
-import * as getterCommands from "../commands/getters";
-import * as advancedCommands from "../commands/advanced";
 import { formatError } from "../utils/errors";
+import { BrowserPool } from "./browser-pool";
 
 export interface DaemonConfig {
   port: number;
@@ -65,7 +65,10 @@ export class DaemonServer {
 
         // Health check
         if (url.pathname === "/health") {
-          return Response.json({ status: "ok", sessions: self.browserPool.getActiveSessions() }, { headers });
+          return Response.json(
+            { status: "ok", sessions: self.browserPool.getActiveSessions() },
+            { headers },
+          );
         }
 
         // Execute command
@@ -75,10 +78,13 @@ export class DaemonServer {
             const response = await self.executeCommand(request);
             return Response.json(response, { headers });
           } catch (error) {
-            return Response.json({
-              success: false,
-              error: error instanceof Error ? formatError(error) : String(error),
-            }, { status: 500, headers });
+            return Response.json(
+              {
+                success: false,
+                error: error instanceof Error ? formatError(error) : String(error),
+              },
+              { status: 500, headers },
+            );
           }
         }
 
@@ -92,10 +98,13 @@ export class DaemonServer {
 
             return Response.json({ success: true, closed }, { headers });
           } catch (error) {
-            return Response.json({
-              success: false,
-              error: error instanceof Error ? error.message : String(error),
-            }, { status: 500, headers });
+            return Response.json(
+              {
+                success: false,
+                error: error instanceof Error ? error.message : String(error),
+              },
+              { status: 500, headers },
+            );
           }
         }
 
@@ -129,7 +138,7 @@ export class DaemonServer {
       // Get or create session
       const session = await this.sessionManager.getOrCreate(
         sessionName,
-        options.channel || "chrome"
+        options.channel || "chrome",
       );
 
       // Get browser from pool
@@ -224,7 +233,7 @@ export class DaemonServer {
             result = `Selected: ${args.value} in ${args.selector}`;
             break;
 
-          case "wait":
+          case "wait": {
             const conditionValue = /^\d+$/.test(args.condition)
               ? Number.parseInt(args.condition)
               : args.condition;
@@ -233,6 +242,7 @@ export class DaemonServer {
             });
             result = "Wait completed";
             break;
+          }
 
           // 第一批新增 Action 命令
           case "check":
@@ -477,7 +487,7 @@ export class DaemonServer {
                 break;
               case "wheel":
                 await advancedCommands.mouseWheel(page, args.deltaY, args.deltaX || 0);
-                result = `Mouse wheel scrolled`;
+                result = "Mouse wheel scrolled";
                 break;
               default:
                 throw new Error(`Unknown mouse action: ${args.action}`);

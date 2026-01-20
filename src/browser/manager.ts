@@ -1,9 +1,9 @@
+import { existsSync, readdirSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import { chromium } from "patchright";
 import type { Browser, BrowserContext, Page } from "patchright";
 import type { Session } from "../session/store";
-import { existsSync, readdirSync } from "node:fs";
-import { join } from "node:path";
-import { homedir } from "node:os";
 import { syncChromeData } from "./sync-chrome-data";
 
 export interface BrowserManagerOptions {
@@ -30,7 +30,7 @@ export class BrowserManager {
 
   async connect(): Promise<void> {
     // Try to reconnect to existing browser via CDP
-    if (this.session.wsEndpoint && await this.isBrowserRunning()) {
+    if (this.session.wsEndpoint && (await this.isBrowserRunning())) {
       try {
         this.browser = await chromium.connectOverCDP(this.session.wsEndpoint);
         const contexts = this.browser.contexts();
@@ -64,7 +64,7 @@ export class BrowserManager {
 
   async launch(): Promise<void> {
     // Sync Chrome data from system profile (only if enabled)
-    const syncSystemChrome = process.env.HAB_SYNC_CHROME === 'true';
+    const syncSystemChrome = process.env.HAB_SYNC_CHROME === "true";
     if (syncSystemChrome) {
       console.log("Syncing data from system Chrome profile...");
       syncChromeData(this.session.userDataDir);
@@ -77,7 +77,7 @@ export class BrowserManager {
     ];
 
     // Check if extensions should be loaded (opt-in via environment variable)
-    const loadExtensions = process.env.HAB_LOAD_EXTENSIONS === 'true';
+    const loadExtensions = process.env.HAB_LOAD_EXTENSIONS === "true";
 
     if (loadExtensions) {
       // Load extensions from Chrome profile
@@ -86,11 +86,15 @@ export class BrowserManager {
       // Add extension paths if any found (limit to 10 for better stability)
       if (extensionPaths.length > 0) {
         const limitedExtensions = extensionPaths.slice(0, 10);
-        console.log(`Loading ${limitedExtensions.length} Chrome extensions (limited from ${extensionPaths.length} total)...`);
-        launchArgs.push(`--load-extension=${limitedExtensions.join(',')}`);
+        console.log(
+          `Loading ${limitedExtensions.length} Chrome extensions (limited from ${extensionPaths.length} total)...`,
+        );
+        launchArgs.push(`--load-extension=${limitedExtensions.join(",")}`);
 
         if (extensionPaths.length > 10) {
-          console.log(`Note: Limited to 10 extensions to ensure stability. ${extensionPaths.length - 10} extensions skipped.`);
+          console.log(
+            `Note: Limited to 10 extensions to ensure stability. ${extensionPaths.length - 10} extensions skipped.`,
+          );
         }
       }
     } else {
@@ -99,14 +103,16 @@ export class BrowserManager {
 
     try {
       // Security: Check if system Keychain should be used (opt-in for security)
-      const useSystemKeychain = process.env.HAB_USE_SYSTEM_KEYCHAIN === 'true';
+      const useSystemKeychain = process.env.HAB_USE_SYSTEM_KEYCHAIN === "true";
 
       const ignoreArgs = ["--enable-automation"];
 
       if (!useSystemKeychain) {
         // Default: Use isolated password store (more secure)
         launchArgs.push("--password-store=basic");
-        console.log("🔒 Using isolated password store (secure mode). Set HAB_USE_SYSTEM_KEYCHAIN=true to use system Keychain.");
+        console.log(
+          "🔒 Using isolated password store (secure mode). Set HAB_USE_SYSTEM_KEYCHAIN=true to use system Keychain.",
+        );
       } else {
         // Opt-in: Allow system Keychain access
         ignoreArgs.push("--password-store=basic", "--use-mock-keychain");
@@ -144,7 +150,9 @@ export class BrowserManager {
       // @ts-ignore
       const wsEndpoint = this.browser?.wsEndpoint?.();
 
-      console.log(`Launched new browser (PID: ${pid}, Extensions: ${loadExtensions ? 'enabled' : 'disabled'})`);
+      console.log(
+        `Launched new browser (PID: ${pid}, Extensions: ${loadExtensions ? "enabled" : "disabled"})`,
+      );
     } catch (error) {
       console.error("Failed to launch browser:", error);
       throw error;
@@ -162,15 +170,21 @@ export class BrowserManager {
   // Security: Check if extension manifest contains dangerous permissions
   private isExtensionSafe(manifestPath: string): boolean {
     try {
-      const { readFileSync } = require('node:fs');
-      const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+      const { readFileSync } = require("node:fs");
+      const manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
 
       // Check for dangerous permissions
-      const dangerousPerms = ['debugger', 'webRequest', 'proxy', '<all_urls>', 'webRequestBlocking'];
+      const dangerousPerms = [
+        "debugger",
+        "webRequest",
+        "proxy",
+        "<all_urls>",
+        "webRequestBlocking",
+      ];
       const permissions = [
         ...(manifest.permissions || []),
         ...(manifest.host_permissions || []),
-        ...(manifest.optional_permissions || [])
+        ...(manifest.optional_permissions || []),
       ];
 
       for (const perm of dangerousPerms) {
@@ -194,7 +208,7 @@ export class BrowserManager {
       // Chrome extensions directory
       const chromeExtensionsDir = join(
         homedir(),
-        "Library/Application Support/Google/Chrome/Default/Extensions"
+        "Library/Application Support/Google/Chrome/Default/Extensions",
       );
 
       if (!existsSync(chromeExtensionsDir)) {
@@ -207,7 +221,7 @@ export class BrowserManager {
 
       for (const extensionId of extensionDirs) {
         // Skip hidden files and .DS_Store
-        if (extensionId.startsWith('.')) continue;
+        if (extensionId.startsWith(".")) continue;
 
         // Security: Whitelist check (if whitelist is not empty, enforce it)
         if (this.ALLOWED_EXTENSION_IDS.size > 0 && !this.ALLOWED_EXTENSION_IDS.has(extensionId)) {
@@ -219,13 +233,13 @@ export class BrowserManager {
 
         try {
           // Check if it's a directory
-          const { statSync } = require('node:fs');
+          const { statSync } = require("node:fs");
           const stat = statSync(extensionDir);
           if (!stat.isDirectory()) continue;
 
           // Read version subdirectories
           const versions = readdirSync(extensionDir);
-          const validVersions = versions.filter(v => !v.startsWith('.'));
+          const validVersions = versions.filter((v) => !v.startsWith("."));
 
           if (validVersions.length === 0) continue;
 
@@ -234,7 +248,7 @@ export class BrowserManager {
           const extensionPath = join(extensionDir, latestVersion);
 
           // Verify the extension path exists and has manifest
-          const manifestPath = join(extensionPath, 'manifest.json');
+          const manifestPath = join(extensionPath, "manifest.json");
           if (existsSync(manifestPath)) {
             // Security: Validate extension safety
             if (!this.isExtensionSafe(manifestPath)) {
@@ -248,7 +262,6 @@ export class BrowserManager {
         } catch (error) {
           // Skip invalid extension directories
           console.log(`Skipping invalid extension: ${extensionId}`);
-          continue;
         }
       }
 
@@ -313,12 +326,12 @@ export class BrowserManager {
     try {
       await this.page.evaluate((op) => {
         // Remove existing indicator
-        const existing = document.getElementById('hab-operation-indicator');
+        const existing = document.getElementById("hab-operation-indicator");
         if (existing) existing.remove();
 
         // Create new indicator
-        const indicator = document.createElement('div');
-        indicator.id = 'hab-operation-indicator';
+        const indicator = document.createElement("div");
+        indicator.id = "hab-operation-indicator";
         indicator.innerHTML = `
           <div style="
             position: fixed;
@@ -350,9 +363,9 @@ export class BrowserManager {
         `;
 
         // Add animations
-        if (!document.getElementById('hab-styles')) {
-          const style = document.createElement('style');
-          style.id = 'hab-styles';
+        if (!document.getElementById("hab-styles")) {
+          const style = document.createElement("style");
+          style.id = "hab-styles";
           style.textContent = `
             @keyframes hab-slide-in {
               from { transform: translateX(400px); opacity: 0; }
@@ -378,9 +391,9 @@ export class BrowserManager {
 
     try {
       await this.page.evaluate(() => {
-        const indicator = document.getElementById('hab-operation-indicator');
+        const indicator = document.getElementById("hab-operation-indicator");
         if (indicator) {
-          indicator.style.animation = 'hab-slide-in 0.3s ease-out reverse';
+          indicator.style.animation = "hab-slide-in 0.3s ease-out reverse";
           setTimeout(() => indicator.remove(), 300);
         }
       });

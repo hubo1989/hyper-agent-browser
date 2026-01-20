@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 import { Command } from "commander";
+import * as configCommands from "./commands/config";
 import { DaemonClient } from "./daemon/client";
 import type { CommandRequest } from "./daemon/server";
-import * as configCommands from "./commands/config";
 import { getExitCode } from "./utils/errors";
 
 const program = new Command();
@@ -55,7 +55,11 @@ program
   .description("Open a URL")
   .option("--wait-until <state>", "Wait until state (load/domcontentloaded/networkidle)", "load")
   .action(async (url, options, command) => {
-    const result = await executeViaDaemon("open", { url, waitUntil: options.waitUntil }, command.parent);
+    const result = await executeViaDaemon(
+      "open",
+      { url, waitUntil: options.waitUntil },
+      command.parent,
+    );
     console.log(result);
   });
 
@@ -105,7 +109,11 @@ program
   .description("Type text into an element")
   .option("--delay <ms>", "Delay between keystrokes", "0")
   .action(async (selector, text, options, command) => {
-    const result = await executeViaDaemon("type", { selector, text, delay: Number.parseInt(options.delay) }, command.parent);
+    const result = await executeViaDaemon(
+      "type",
+      { selector, text, delay: Number.parseInt(options.delay) },
+      command.parent,
+    );
     console.log(result);
   });
 
@@ -123,11 +131,15 @@ program
   .option("--amount <pixels>", "Scroll amount in pixels", "500")
   .option("--selector <selector>", "Scroll within element")
   .action(async (direction, options, command) => {
-    const result = await executeViaDaemon("scroll", {
-      direction,
-      amount: Number.parseInt(options.amount),
-      selector: options.selector,
-    }, command.parent);
+    const result = await executeViaDaemon(
+      "scroll",
+      {
+        direction,
+        amount: Number.parseInt(options.amount),
+        selector: options.selector,
+      },
+      command.parent,
+    );
     console.log(result);
   });
 
@@ -156,14 +168,18 @@ program
   .option("--fn <function>", "Wait for JavaScript condition")
   .option("--load <state>", "Wait for load state (load/domcontentloaded/networkidle)")
   .action(async (condition, options, command) => {
-    const result = await executeViaDaemon("wait", {
-      condition: condition || "",
-      timeout: options.timeout,
-      text: options.text,
-      url: options.url,
-      fn: options.fn,
-      load: options.load,
-    }, command.parent);
+    const result = await executeViaDaemon(
+      "wait",
+      {
+        condition: condition || "",
+        timeout: options.timeout,
+        text: options.text,
+        url: options.url,
+        fn: options.fn,
+        load: options.load,
+      },
+      command.parent,
+    );
     console.log(result);
   });
 
@@ -229,7 +245,11 @@ program
   .command("get <subcommand> <selector> [attribute]")
   .description("Get element info (text/value/attr/html/count/box)")
   .action(async (subcommand, selector, attribute, _options, command) => {
-    const result = await executeViaDaemon("get", { subcommand, selector, attribute }, command.parent);
+    const result = await executeViaDaemon(
+      "get",
+      { subcommand, selector, attribute },
+      command.parent,
+    );
     console.log(result);
   });
 
@@ -259,7 +279,7 @@ program
   .description("Manage cookies (get/set/clear)")
   .action(async (action, name, value, _options, command) => {
     const result = await executeViaDaemon("cookies", { action, name, value }, command.parent);
-    if (typeof result === 'object') {
+    if (typeof result === "object") {
       console.log(JSON.stringify(result, null, 2));
     } else {
       console.log(result);
@@ -271,13 +291,17 @@ program
   .command("storage <type> [action] [key] [value]")
   .description("Manage storage (local/session)")
   .action(async (type, action, key, value, _options, command) => {
-    const result = await executeViaDaemon("storage", {
-      storageType: type,
-      action,
-      key,
-      value
-    }, command.parent);
-    if (typeof result === 'object') {
+    const result = await executeViaDaemon(
+      "storage",
+      {
+        storageType: type,
+        action,
+        key,
+        value,
+      },
+      command.parent,
+    );
+    if (typeof result === "object") {
       console.log(JSON.stringify(result, null, 2));
     } else {
       console.log(result);
@@ -292,12 +316,16 @@ program
   .option("--landscape", "Landscape orientation")
   .option("--print-background", "Print background graphics", true)
   .action(async (path, options, command) => {
-    const result = await executeViaDaemon("pdf", {
-      path,
-      format: options.format,
-      landscape: options.landscape,
-      printBackground: options.printBackground,
-    }, command.parent);
+    const result = await executeViaDaemon(
+      "pdf",
+      {
+        path,
+        format: options.format,
+        landscape: options.landscape,
+        printBackground: options.printBackground,
+      },
+      command.parent,
+    );
     console.log(result);
   });
 
@@ -306,16 +334,16 @@ program
   .command("set <subcommand> [args...]")
   .description("Set browser settings (viewport/geo/offline/headers/media)")
   .action(async (subcommand, args, _options, command) => {
-    let params: any = { subcommand };
+    const params: any = { subcommand };
 
     switch (subcommand) {
       case "viewport":
-        params.width = parseInt(args[0]);
-        params.height = parseInt(args[1]);
+        params.width = Number.parseInt(args[0]);
+        params.height = Number.parseInt(args[1]);
         break;
       case "geo":
-        params.latitude = parseFloat(args[0]);
-        params.longitude = parseFloat(args[1]);
+        params.latitude = Number.parseFloat(args[0]);
+        params.longitude = Number.parseFloat(args[1]);
         break;
       case "offline":
         params.enabled = args[0] === "on" || args[0] === "true";
@@ -337,20 +365,20 @@ program
   .command("mouse <action> [args...]")
   .description("Mouse control (move/down/up/wheel)")
   .action(async (action, args, _options, command) => {
-    let params: any = { action };
+    const params: any = { action };
 
     switch (action) {
       case "move":
-        params.x = parseInt(args[0]);
-        params.y = parseInt(args[1]);
+        params.x = Number.parseInt(args[0]);
+        params.y = Number.parseInt(args[1]);
         break;
       case "down":
       case "up":
         params.button = args[0] || "left";
         break;
       case "wheel":
-        params.deltaY = parseInt(args[0]);
-        params.deltaX = args[1] ? parseInt(args[1]) : 0;
+        params.deltaY = Number.parseInt(args[0]);
+        params.deltaX = args[1] ? Number.parseInt(args[1]) : 0;
         break;
     }
 
@@ -382,7 +410,7 @@ program
   .action(async (action, _options, command) => {
     const result = await executeViaDaemon("console", { action }, command.parent);
     if (Array.isArray(result)) {
-      console.log(result.join('\n'));
+      console.log(result.join("\n"));
     } else {
       console.log(result);
     }
@@ -394,7 +422,7 @@ program
   .action(async (action, _options, command) => {
     const result = await executeViaDaemon("errors", { action }, command.parent);
     if (Array.isArray(result)) {
-      console.log(result.join('\n'));
+      console.log(result.join("\n"));
     } else {
       console.log(result);
     }
@@ -417,11 +445,15 @@ program
   .option("-r, --raw", "Output raw JSON")
   .option("-o, --output <file>", "Output to file")
   .action(async (options, command) => {
-    const result = await executeViaDaemon("snapshot", {
-      interactive: options.interactive,
-      full: options.full,
-      raw: options.raw,
-    }, command.parent);
+    const result = await executeViaDaemon(
+      "snapshot",
+      {
+        interactive: options.interactive,
+        full: options.full,
+        raw: options.raw,
+      },
+      command.parent,
+    );
 
     if (options.output) {
       await Bun.write(options.output, result);
@@ -438,11 +470,15 @@ program
   .option("--full-page", "Capture full page")
   .option("--selector <selector>", "Capture specific element")
   .action(async (options, command) => {
-    const result = await executeViaDaemon("screenshot", {
-      output: options.output,
-      fullPage: options.fullPage,
-      selector: options.selector,
-    }, command.parent);
+    const result = await executeViaDaemon(
+      "screenshot",
+      {
+        output: options.output,
+        fullPage: options.fullPage,
+        selector: options.selector,
+      },
+      command.parent,
+    );
     console.log(result);
   });
 

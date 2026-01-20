@@ -9,10 +9,12 @@
       "recommended": true,
       "style": {
         "useConst": "error",
-        "useTemplate": "warn"
+        "useTemplate": "warn",
+        "noNonNullAssertion": "off"
       },
       "suspicious": {
-        "noExplicitAny": "warn"
+        "noExplicitAny": "off",
+        "noImplicitAnyLet": "off"
       }
     }
   },

@@ -3,9 +3,9 @@
  * Step 1: 打开 Gmail 并获取页面元素快照
  */
 
-import { chromium } from "patchright";
-import { join } from "node:path";
 import { homedir } from "node:os";
+import { join } from "node:path";
+import { chromium } from "patchright";
 import { AccessibilityExtractor } from "../src/snapshot/accessibility";
 import { SnapshotFormatter } from "../src/snapshot/formatter";
 
@@ -33,7 +33,7 @@ async function main() {
     console.log("📡 打开 Gmail...");
     await page.goto("https://mail.google.com/mail/u/0/#inbox", {
       waitUntil: "load",
-      timeout: 60000
+      timeout: 60000,
     });
 
     console.log("⏳ 等待页面加载...");
@@ -47,7 +47,7 @@ async function main() {
     const formatter = new SnapshotFormatter();
     const formatted = formatter.format(snapshot, {
       maxElements: 100,
-      includeDisabled: false
+      includeDisabled: false,
     });
 
     console.log(formatted);
@@ -58,7 +58,6 @@ async function main() {
     console.log("\n浏览器将保持打开 60 秒供你查看...");
 
     await page.waitForTimeout(60000);
-
   } catch (error) {
     console.error("❌ 错误:", error);
     throw error;

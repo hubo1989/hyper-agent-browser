@@ -1,7 +1,7 @@
-import type { Session } from '../session/store';
-import { join } from 'node:path';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync } from "node:fs";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import type { Session } from "../session/store";
 
 /**
  * Stores and retrieves element reference mappings for a session
@@ -13,8 +13,8 @@ export class ReferenceStore {
   private mappings: Map<string, string> = new Map();
 
   constructor(session: Session) {
-    this.sessionDir = join(session.userDataDir, '..');
-    this.mappingsFile = join(this.sessionDir, 'element-mappings.json');
+    this.sessionDir = join(session.userDataDir, "..");
+    this.mappingsFile = join(this.sessionDir, "element-mappings.json");
   }
 
   /**
@@ -27,11 +27,11 @@ export class ReferenceStore {
     }
 
     try {
-      const content = await readFile(this.mappingsFile, 'utf-8');
+      const content = await readFile(this.mappingsFile, "utf-8");
       const data = JSON.parse(content);
       this.mappings = new Map(Object.entries(data));
     } catch (error) {
-      console.error('Failed to load element mappings:', error);
+      console.error("Failed to load element mappings:", error);
       this.mappings.clear();
     }
   }
@@ -47,9 +47,9 @@ export class ReferenceStore {
       }
 
       const data = Object.fromEntries(this.mappings);
-      await writeFile(this.mappingsFile, JSON.stringify(data, null, 2), 'utf-8');
+      await writeFile(this.mappingsFile, JSON.stringify(data, null, 2), "utf-8");
     } catch (error) {
-      console.error('Failed to save element mappings:', error);
+      console.error("Failed to save element mappings:", error);
     }
   }
 

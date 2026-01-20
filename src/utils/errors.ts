@@ -16,7 +16,7 @@ export class SessionNotFoundError extends HBAError {
     super(
       `Session '${sessionName}' not found`,
       "SESSION_NOT_FOUND",
-      "Run 'hab sessions' to see available sessions"
+      "Run 'hab sessions' to see available sessions",
     );
   }
 }
@@ -26,18 +26,14 @@ export class ElementNotFoundError extends HBAError {
     super(
       `Element not found: ${selector}`,
       "ELEMENT_NOT_FOUND",
-      "Run 'hab snapshot -i' to see available elements"
+      "Run 'hab snapshot -i' to see available elements",
     );
   }
 }
 
 export class BrowserNotRunningError extends HBAError {
   constructor() {
-    super(
-      "Browser not running",
-      "BROWSER_NOT_RUNNING",
-      "Run 'hab open <url>' first"
-    );
+    super("Browser not running", "BROWSER_NOT_RUNNING", "Run 'hab open <url>' first");
   }
 }
 
@@ -46,7 +42,7 @@ export class TimeoutError extends HBAError {
     super(
       `Operation timed out: ${operation} (${timeout}ms)`,
       "TIMEOUT",
-      "Increase timeout with --timeout option"
+      "Increase timeout with --timeout option",
     );
   }
 }
@@ -56,7 +52,7 @@ export class NavigationError extends HBAError {
     super(
       `Navigation failed: ${url}${reason ? ` (${reason})` : ""}`,
       "NAVIGATION_FAILED",
-      "Check if the URL is accessible and valid"
+      "Check if the URL is accessible and valid",
     );
   }
 }
@@ -66,7 +62,7 @@ export class SelectorError extends HBAError {
     super(
       `Invalid selector: ${selector}`,
       "INVALID_SELECTOR",
-      "Use @eN, css=..., text=..., or xpath=..."
+      "Use @eN, css=..., text=..., or xpath=...",
     );
   }
 }
@@ -79,11 +75,7 @@ export class ConfigError extends HBAError {
 
 export class PermissionError extends HBAError {
   constructor(path: string) {
-    super(
-      `Permission denied: ${path}`,
-      "PERMISSION_ERROR",
-      "Check file/directory permissions"
-    );
+    super(`Permission denied: ${path}`, "PERMISSION_ERROR", "Check file/directory permissions");
   }
 }
 

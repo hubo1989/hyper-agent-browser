@@ -29,7 +29,7 @@ export class SnapshotFormatter {
         `Interactive Elements (showing ${options.maxElements} of ${snapshot.elements.length}):`,
       );
     } else {
-      lines.push(`Interactive Elements:`);
+      lines.push("Interactive Elements:");
     }
 
     // Format each element

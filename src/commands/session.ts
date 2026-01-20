@@ -20,11 +20,9 @@ export async function listSessions(
 
   const lines: string[] = [];
   lines.push(
-    "SESSION".padEnd(15) +
-      "STATUS".padEnd(10) +
-      "BROWSER".padEnd(12) +
-      "URL".padEnd(40) +
-      "LAST ACTIVE",
+    `${
+      "SESSION".padEnd(15) + "STATUS".padEnd(10) + "BROWSER".padEnd(12) + "URL".padEnd(40)
+    }LAST ACTIVE`,
   );
   lines.push("-".repeat(100));
 

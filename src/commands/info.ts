@@ -128,7 +128,7 @@ export async function evaluate(page: Page, script: string): Promise<any> {
   const trimmedScript = script.trim();
 
   // 1. Whitelist mode - only allow safe operations
-  const isSafe = SAFE_OPERATIONS.some(pattern => pattern.test(trimmedScript));
+  const isSafe = SAFE_OPERATIONS.some((pattern) => pattern.test(trimmedScript));
 
   if (!isSafe) {
     // 2. Enhanced blacklist check
@@ -144,7 +144,7 @@ export async function evaluate(page: Page, script: string): Promise<any> {
   const serialized = JSON.stringify(result);
 
   if (serialized.length > 100000) {
-    throw new Error('Result too large (max 100KB). Use snapshot command instead.');
+    throw new Error("Result too large (max 100KB). Use snapshot command instead.");
   }
 
   return result;
@@ -188,7 +188,7 @@ export async function content(page: Page, options: ContentOptions = {}): Promise
   }
 
   if (text.length > maxLength) {
-    text = text.slice(0, maxLength) + `... (truncated at ${maxLength} chars)`;
+    text = `${text.slice(0, maxLength)}... (truncated at ${maxLength} chars)`;
   }
 
   return text;

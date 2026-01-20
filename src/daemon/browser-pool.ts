@@ -1,6 +1,6 @@
-import type { Session } from "../session/store";
 import { BrowserManager } from "../browser/manager";
 import type { BrowserManagerOptions } from "../browser/manager";
+import type { Session } from "../session/store";
 
 /**
  * BrowserPool 管理多个 Session 的浏览器实例
@@ -50,7 +50,7 @@ export class BrowserPool {
   }
 
   async closeAll(): Promise<void> {
-    const closePromises = Array.from(this.browsers.values()).map(b => b.close());
+    const closePromises = Array.from(this.browsers.values()).map((b) => b.close());
     await Promise.all(closePromises);
     this.browsers.clear();
   }

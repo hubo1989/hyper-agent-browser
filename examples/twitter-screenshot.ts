@@ -4,11 +4,11 @@
  * 在单个进程中完成所有操作
  */
 
-import { chromium } from "patchright";
-import { join } from "node:path";
-import { homedir } from "node:os";
-import { mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { mkdir } from "node:fs/promises";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { chromium } from "patchright";
 
 async function main() {
   const sessionName = "twitter";

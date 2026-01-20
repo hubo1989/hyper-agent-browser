@@ -3,9 +3,9 @@
  * Gmail 未读邮件标记为已读
  */
 
-import { chromium } from "patchright";
-import { join } from "node:path";
 import { homedir } from "node:os";
+import { join } from "node:path";
+import { chromium } from "patchright";
 
 async function main() {
   const sessionName = "gmail";
@@ -31,7 +31,7 @@ async function main() {
     console.log("📡 打开 Gmail...");
     await page.goto("https://mail.google.com/mail/u/0/#inbox", {
       waitUntil: "load",
-      timeout: 60000
+      timeout: 60000,
     });
 
     console.log("⏳ 等待页面加载...");
@@ -70,7 +70,6 @@ async function main() {
       await page.waitForTimeout(2000);
 
       console.log("🎉 操作完成！");
-
     } catch (error) {
       console.log("⚠️  自动操作失败，可能需要手动操作");
       console.log("错误:", error.message);
@@ -79,10 +78,9 @@ async function main() {
 
       // 等待用户按键
       await new Promise((resolve) => {
-        process.stdin.once('data', resolve);
+        process.stdin.once("data", resolve);
       });
     }
-
   } catch (error) {
     console.error("❌ 错误:", error);
     throw error;

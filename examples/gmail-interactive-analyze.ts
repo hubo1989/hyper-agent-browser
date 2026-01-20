@@ -3,9 +3,9 @@
  * Gmail 交互式分析：登录后获取元素
  */
 
-import { chromium } from "patchright";
-import { join } from "node:path";
 import { homedir } from "node:os";
+import { join } from "node:path";
+import { chromium } from "patchright";
 import { AccessibilityExtractor } from "../src/snapshot/accessibility";
 import { SnapshotFormatter } from "../src/snapshot/formatter";
 
@@ -33,7 +33,7 @@ async function main() {
     console.log("📡 打开 Gmail...");
     await page.goto("https://mail.google.com/mail/u/0/#inbox", {
       waitUntil: "load",
-      timeout: 60000
+      timeout: 60000,
     });
 
     console.log("\n⏸️  请在浏览器中完成以下操作：");
@@ -43,7 +43,7 @@ async function main() {
 
     // 等待用户按 Enter
     await new Promise((resolve) => {
-      process.stdin.once('data', resolve);
+      process.stdin.once("data", resolve);
     });
 
     console.log("\n📸 获取页面快照（只显示可交互元素）...\n");
@@ -54,7 +54,7 @@ async function main() {
     const formatter = new SnapshotFormatter();
     const formatted = formatter.format(snapshot, {
       maxElements: 150,
-      includeDisabled: false
+      includeDisabled: false,
     });
 
     console.log(formatted);
@@ -67,7 +67,6 @@ async function main() {
     console.log("\n浏览器将保持打开 120 秒供你查看...");
 
     await page.waitForTimeout(120000);
-
   } catch (error) {
     console.error("❌ 错误:", error);
     throw error;

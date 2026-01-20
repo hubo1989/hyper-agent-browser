@@ -7,8 +7,8 @@ import type { CommandRequest, CommandResponse } from "./server";
 const CONFIG_FILE = join(homedir(), ".hab", "daemon.json");
 
 export class DaemonClient {
-  private host: string = "127.0.0.1";
-  private port: number = 9527;
+  private host = "127.0.0.1";
+  private port = 9527;
 
   async ensureDaemonRunning(): Promise<void> {
     // Load daemon config
@@ -35,7 +35,7 @@ export class DaemonClient {
 
     // Wait for daemon to be ready
     for (let i = 0; i < 30; i++) {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       if (await this.checkHealth()) {
         console.log("Daemon started successfully");
         return;

@@ -1,9 +1,13 @@
-import type { Page, Cookie } from "patchright";
+import type { Cookie, Page } from "patchright";
 
 // ============ Dialog 对话框处理 ============
 
-export async function setupDialogHandler(page: Page, action: "accept" | "dismiss", promptText?: string): Promise<void> {
-  page.on("dialog", async dialog => {
+export async function setupDialogHandler(
+  page: Page,
+  action: "accept" | "dismiss",
+  promptText?: string,
+): Promise<void> {
+  page.on("dialog", async (dialog) => {
     if (action === "accept") {
       await dialog.accept(promptText);
     } else {
@@ -31,11 +35,13 @@ export async function setCookie(page: Page, name: string, value: string): Promis
   const context = page.context();
   const url = page.url();
 
-  await context.addCookies([{
-    name,
-    value,
-    url,
-  }]);
+  await context.addCookies([
+    {
+      name,
+      value,
+      url,
+    },
+  ]);
 }
 
 export async function clearCookies(page: Page): Promise<void> {
@@ -63,10 +69,7 @@ export async function getLocalStorage(page: Page, key?: string): Promise<any> {
 }
 
 export async function setLocalStorage(page: Page, key: string, value: string): Promise<void> {
-  await page.evaluate(
-    ({ k, v }) => localStorage.setItem(k, v),
-    { k: key, v: value }
-  );
+  await page.evaluate(({ k, v }) => localStorage.setItem(k, v), { k: key, v: value });
 }
 
 export async function clearLocalStorage(page: Page): Promise<void> {
@@ -91,10 +94,7 @@ export async function getSessionStorage(page: Page, key?: string): Promise<any> 
 }
 
 export async function setSessionStorage(page: Page, key: string, value: string): Promise<void> {
-  await page.evaluate(
-    ({ k, v }) => sessionStorage.setItem(k, v),
-    { k: key, v: value }
-  );
+  await page.evaluate(({ k, v }) => sessionStorage.setItem(k, v), { k: key, v: value });
 }
 
 export async function clearSessionStorage(page: Page): Promise<void> {
@@ -105,7 +105,18 @@ export async function clearSessionStorage(page: Page): Promise<void> {
 
 export interface PDFOptions {
   path: string;
-  format?: "Letter" | "Legal" | "Tabloid" | "Ledger" | "A0" | "A1" | "A2" | "A3" | "A4" | "A5" | "A6";
+  format?:
+    | "Letter"
+    | "Legal"
+    | "Tabloid"
+    | "Ledger"
+    | "A0"
+    | "A1"
+    | "A2"
+    | "A3"
+    | "A4"
+    | "A5"
+    | "A6";
   landscape?: boolean;
   printBackground?: boolean;
   margin?: {
@@ -134,7 +145,11 @@ export async function setViewport(page: Page, width: number, height: number): Pr
   await page.setViewportSize({ width, height });
 }
 
-export async function setGeolocation(page: Page, latitude: number, longitude: number): Promise<void> {
+export async function setGeolocation(
+  page: Page,
+  latitude: number,
+  longitude: number,
+): Promise<void> {
   const context = page.context();
   await context.setGeolocation({ latitude, longitude });
 }
@@ -149,7 +164,10 @@ export async function setExtraHeaders(page: Page, headers: Record<string, string
   await context.setExtraHTTPHeaders(headers);
 }
 
-export async function setMediaColorScheme(page: Page, scheme: "light" | "dark" | "no-preference"): Promise<void> {
+export async function setMediaColorScheme(
+  page: Page,
+  scheme: "light" | "dark" | "no-preference",
+): Promise<void> {
   await page.emulateMedia({ colorScheme: scheme });
 }
 
@@ -159,15 +177,21 @@ export async function mouseMove(page: Page, x: number, y: number): Promise<void>
   await page.mouse.move(x, y);
 }
 
-export async function mouseDown(page: Page, button: "left" | "right" | "middle" = "left"): Promise<void> {
+export async function mouseDown(
+  page: Page,
+  button: "left" | "right" | "middle" = "left",
+): Promise<void> {
   await page.mouse.down({ button });
 }
 
-export async function mouseUp(page: Page, button: "left" | "right" | "middle" = "left"): Promise<void> {
+export async function mouseUp(
+  page: Page,
+  button: "left" | "right" | "middle" = "left",
+): Promise<void> {
   await page.mouse.up({ button });
 }
 
-export async function mouseWheel(page: Page, deltaY: number, deltaX: number = 0): Promise<void> {
+export async function mouseWheel(page: Page, deltaY: number, deltaX = 0): Promise<void> {
   await page.mouse.wheel(deltaX, deltaY);
 }
 
@@ -187,13 +211,13 @@ const consoleLogs: string[] = [];
 const pageErrors: string[] = [];
 
 export function setupConsoleCapture(page: Page): void {
-  page.on("console", msg => {
+  page.on("console", (msg) => {
     consoleLogs.push(`[${msg.type()}] ${msg.text()}`);
   });
 }
 
 export function setupErrorCapture(page: Page): void {
-  page.on("pageerror", error => {
+  page.on("pageerror", (error) => {
     pageErrors.push(error.message);
   });
 }

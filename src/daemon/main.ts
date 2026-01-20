@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-import { DaemonServer } from "./server";
 import { existsSync } from "node:fs";
-import { writeFile, readFile, unlink } from "node:fs/promises";
+import { readFile, unlink, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { DaemonServer } from "./server";
 
 const DAEMON_PORT = 9527;
 const DAEMON_HOST = "127.0.0.1";
@@ -120,7 +120,7 @@ async function main() {
       console.log(`Stopped daemon (PID: ${info.pid})`);
 
       // Wait a bit for graceful shutdown
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Force cleanup
       await removeDaemonInfo();
@@ -145,7 +145,9 @@ async function main() {
       try {
         const response = await fetch(`http://${info.host}:${info.port}/health`);
         const data = await response.json();
-        console.log(`Active sessions: ${data.sessions.length > 0 ? data.sessions.join(", ") : "none"}`);
+        console.log(
+          `Active sessions: ${data.sessions.length > 0 ? data.sessions.join(", ") : "none"}`,
+        );
       } catch {
         console.log("Could not fetch session info");
       }
@@ -160,7 +162,7 @@ async function main() {
     if (info) {
       try {
         process.kill(info.pid, "SIGTERM");
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch {
         // Ignore
       }
@@ -187,12 +189,12 @@ async function main() {
 
     await new Promise(() => {});
   } else {
-    console.log(`Usage: bun src/daemon/main.ts [start|stop|status|restart]`);
+    console.log("Usage: bun src/daemon/main.ts [start|stop|status|restart]");
     process.exit(1);
   }
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error("Daemon error:", error);
   process.exit(1);
 });
