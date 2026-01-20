@@ -1,4 +1,4 @@
-# hyperagentbrowser v0.1.0 项目初始化完成 ✅
+# hyper-agent-browser v0.1.0 项目初始化完成 ✅
 
 ## 已完成功能
 

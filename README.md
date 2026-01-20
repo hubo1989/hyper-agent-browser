@@ -1,4 +1,4 @@
-# hyperagentbrowser (hab)
+# hyper-agent-browser (hab)
 
 **纯浏览器自动化 CLI，专为 AI Agent 设计**
 
@@ -78,7 +78,7 @@ bun dev -- -s gmail snapshot -i
 # 传统方式（繁琐）
 hab click 'css=button.MuiButton-root.MuiButton-contained'
 
-# hyperagentbrowser 方式（简单）
+# hyper-agent-browser 方式（简单）
 hab snapshot -i  # 生成引用
 hab click @e5    # 使用引用
 ```
@@ -124,7 +124,7 @@ bun run build:all              # 所有平台
 
 ## 🤖 AI Agent 集成
 
-hyperagentbrowser 专为 AI Agent 设计。安装 Skill 文件：
+hyper-agent-browser 专为 AI Agent 设计。安装 Skill 文件：
 
 ```bash
 mkdir -p ~/.claude/skills

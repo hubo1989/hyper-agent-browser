@@ -1,4 +1,4 @@
-# hyperagentbrowser (hab) - 功能完成总结
+# hyper-agent-browser (hab) - 功能完成总结
 
 ## 任务完成情况
 

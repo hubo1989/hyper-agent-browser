@@ -1,4 +1,4 @@
-# hyperagentbrowser v0.1.0 项目完成报告
+# hyper-agent-browser v0.1.0 项目完成报告
 
 **日期**: 2026-01-15  
 **状态**: ✅ 所有 specs 功能已完成  

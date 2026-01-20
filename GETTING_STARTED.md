@@ -1,4 +1,4 @@
-# Getting Started with hyperagentbrowser
+# Getting Started with hyper-agent-browser
 
 ## 前置要求
 

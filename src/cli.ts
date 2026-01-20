@@ -10,7 +10,7 @@ const daemonClient = new DaemonClient();
 
 program
   .name("hab")
-  .description("hyperagentbrowser - Browser automation CLI for AI Agents")
+  .description("hyper-agent-browser - Browser automation CLI for AI Agents")
   .version("0.2.0");
 
 // Global options
@@ -561,7 +561,7 @@ program
   .command("version")
   .description("Show version information")
   .action(() => {
-    console.log("hyperagentbrowser v0.2.0 (with daemon architecture)");
+    console.log("hyper-agent-browser v0.2.0 (with daemon architecture)");
     console.log(`Bun v${Bun.version}`);
     console.log("Patchright v1.55.1");
   });

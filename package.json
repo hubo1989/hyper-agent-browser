@@ -1,5 +1,5 @@
 {
-  "name": "hyper-browser-agent",
+  "name": "hyper-agent-browser",
   "version": "0.1.0",
   "description": "Pure browser automation CLI for AI Agents",
   "type": "module",

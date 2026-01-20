@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-**hyperagentbrowser (hab)** - 纯浏览器操作 CLI 工具，供 AI Agent 调用
+**hyper-agent-browser (hab)** - 纯浏览器操作 CLI 工具，供 AI Agent 调用
 
 核心理念：将 AI 决策与浏览器操作分离。CLI 负责确定性的浏览器操作，AI Agent 负责任务理解和决策。
 

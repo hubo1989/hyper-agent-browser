@@ -1,4 +1,4 @@
-# 🎉 hyperagentbrowser v0.1.0 项目完成总结
+# 🎉 hyper-agent-browser v0.1.0 项目完成总结
 
 ## ✅ 项目状态：功能完整
 
@@ -171,7 +171,7 @@ hyper-agent-browser/
 # 传统方式
 hab click 'css=button.MuiButton-root.MuiButton-contained.MuiButton-sizeMedium'
 
-# hyperagentbrowser 方式
+# hyper-agent-browser 方式
 hab snapshot -i  # 生成引用
 hab click @e5    # 简洁明了
 ```
@@ -182,7 +182,7 @@ hab click @e5    # 简洁明了
 
 ```
 ┌─────────────┐  Skill   ┌──────────────────┐
-│ AI Agent    │ ──────► │ hyperagentbrowser │
+│ AI Agent    │ ──────► │ hyper-agent-browser │
 │ (Claude)    │          │ (CLI)             │
 │ • 理解任务  │          │ • 执行操作        │
 │ • 分析快照  │          │ • 返回结果        │
@@ -405,7 +405,7 @@ MIT License - 详见 LICENSE 文件
 ## 📊 最终数据
 
 ```yaml
-项目名称: hyperagentbrowser
+项目名称: hyper-agent-browser
 版本: 0.1.0
 状态: ✅ 功能完整
 规格符合度: 100%

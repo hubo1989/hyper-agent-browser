@@ -1,6 +1,6 @@
-# hyperagentbrowser Spec 功能完成情况
+# hyper-agent-browser Spec 功能完成情况
 
-**项目**: hyperagentbrowser (hab)
+**项目**: hyper-agent-browser (hab)
 **日期**: 2026-01-15
 **版本**: v0.1.0
 

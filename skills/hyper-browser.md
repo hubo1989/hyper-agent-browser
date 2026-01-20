@@ -4,7 +4,7 @@ Control web browsers through CLI commands for automation tasks.
 
 ## Overview
 
-hyperagentbrowser (hab) is a browser automation CLI that lets you:
+hyper-agent-browser (hab) is a browser automation CLI that lets you:
 - Navigate web pages
 - Interact with elements (click, fill, type)
 - Extract page information via snapshots

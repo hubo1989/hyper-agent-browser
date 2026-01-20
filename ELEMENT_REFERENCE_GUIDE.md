@@ -2,7 +2,7 @@
 
 ## 概述
 
-hyperagentbrowser 现在支持使用 `@e1`, `@e2` 等引用来操作页面元素，无需手动编写 CSS 选择器。
+hyper-agent-browser 现在支持使用 `@e1`, `@e2` 等引用来操作页面元素，无需手动编写 CSS 选择器。
 
 ## 工作原理
 

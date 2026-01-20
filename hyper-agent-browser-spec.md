@@ -1,6 +1,6 @@
-# hyperagentbrowser 技术规格文档
+# hyper-agent-browser 技术规格文档
 
-> **项目代号**: hyperagentbrowser (HBA)  
+> **项目代号**: hyper-agent-browser (HBA)  
 > **版本**: 1.0.0-spec  
 > **日期**: 2026-01-15  
 > **状态**: Draft  
@@ -28,7 +28,7 @@
 
 ```
 ┌─────────────────┐         ┌─────────────────┐
-│   AI Agent      │  Skill  │  hyperagentbrowser │
+│   AI Agent      │  Skill  │  hyper-agent-browser │
 │  (Claude Code)  │ ──────► │     (CLI)        │
 │                 │         │                  │
 │  • 理解任务     │         │  • 执行操作       │
@@ -94,7 +94,7 @@ $ hab press Enter
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
 │   ┌─────────────────────────────────────────────────────────────┐   │
-│   │                  hyperagentbrowser CLI                      │   │
+│   │                  hyper-agent-browser CLI                      │   │
 │   │                       (Bun)                                 │   │
 │   │                                                             │   │
 │   │   Commands:                                                 │   │
@@ -126,7 +126,7 @@ $ hab press Enter
 ### 2.2 模块划分
 
 ```
-hyper-browser-agent/
+hyper-agent-browser/
 ├── src/
 │   ├── cli.ts                 # CLI 入口
 │   ├── index.ts               # SDK 入口（可选）
@@ -221,7 +221,7 @@ hyper-browser-agent/
 
 ```json
 {
-  "name": "hyper-browser-agent",
+  "name": "hyper-agent-browser",
   "version": "1.0.0",
   "type": "module",
   "bin": {
@@ -583,7 +583,7 @@ hab config set headed true
 hab version
 
 # 输出
-hyperagentbrowser v1.0.0
+hyper-agent-browser v1.0.0
 Bun v1.1.0
 Patchright v1.55.1
 ```
@@ -603,7 +603,7 @@ Control web browsers through CLI commands for automation tasks.
 
 ## Overview
 
-hyperagentbrowser (hab) is a browser automation CLI that lets you:
+hyper-agent-browser (hab) is a browser automation CLI that lets you:
 - Navigate web pages
 - Interact with elements (click, fill, type)
 - Extract page information via snapshots
@@ -1120,14 +1120,14 @@ bun run build:all
 
 ```bash
 # 方式 1: npm/bun 全局安装
-bun add -g hyper-browser-agent
+bun add -g hyper-agent-browser
 
 # 方式 2: 下载编译好的二进制
 curl -fsSL https://github.com/.../releases/download/v1.0.0/hab-darwin-arm64 -o /usr/local/bin/hab
 chmod +x /usr/local/bin/hab
 
 # 方式 3: Homebrew (macOS)
-brew install hyper-browser-agent
+brew install hyper-agent-browser
 ```
 
 ---
