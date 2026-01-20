@@ -1,4 +1,4 @@
-import { loadConfig, saveConfig, getConfigValue, setConfigValue } from "../utils/config";
+import { loadConfig, getConfigValue, setConfigValue } from "../utils/config";
 
 export async function listConfig(): Promise<string> {
   const config = await loadConfig();
