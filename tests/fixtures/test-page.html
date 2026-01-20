@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试表格页面</title>
+</head>
+<body>
+  <h1>用户列表</h1>
+
+  <table class="users-table">
+    <thead>
+      <tr>
+        <th>姓名</th>
+        <th>年龄</th>
+        <th>城市</th>
+        <th>邮箱</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>张三</td>
+        <td>25</td>
+        <td>北京</td>
+        <td>zhangsan@example.com</td>
+      </tr>
+      <tr>
+        <td>李四</td>
+        <td>30</td>
+        <td>上海</td>
+        <td>lisi@example.com</td>
+      </tr>
+      <tr>
+        <td>王五</td>
+        <td>28</td>
+        <td>广州</td>
+        <td>wangwu@example.com</td>
+      </tr>
+      <tr style="display: none;">
+        <td>隐藏用户</td>
+        <td>99</td>
+        <td>隐藏城市</td>
+        <td>hidden@example.com</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>产品列表</h2>
+  <ul class="product-list">
+    <li class="product-item" data-id="prod_1">
+      <h3 class="product-title">iPhone 15 Pro</h3>
+      <p class="product-price">¥8999</p>
+      <p class="product-desc">最新款苹果手机</p>
+    </li>
+    <li class="product-item" data-id="prod_2">
+      <h3 class="product-title">MacBook Pro</h3>
+      <p class="product-price">¥12999</p>
+      <p class="product-desc">专业级笔记本电脑</p>
+    </li>
+    <li class="product-item" data-id="prod_3">
+      <h3 class="product-title">AirPods Pro</h3>
+      <p class="product-price">¥1999</p>
+      <p class="product-desc">降噪耳机</p>
+    </li>
+  </ul>
+
+  <h2>登录表单</h2>
+  <form id="login-form">
+    <div>
+      <label for="username">用户名:</label>
+      <input type="text" id="username" name="username" placeholder="请输入用户名" required>
+    </div>
+    <div>
+      <label for="password">密码:</label>
+      <input type="password" id="password" name="password" placeholder="请输入密码" required>
+    </div>
+    <div>
+      <label>
+        <input type="checkbox" id="remember" name="remember">
+        记住我
+      </label>
+    </div>
+    <button type="submit">登录</button>
+  </form>
+</body>
+</html>

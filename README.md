@@ -15,6 +15,9 @@
 - ⚡ **快速启动** - Bun 运行时，冷启动 ~25ms
 - 🤖 **AI Agent 友好** - 设计用于 Claude Code 等 AI Agent 调用
 - 🔒 **安全加固** - 沙箱隔离、权限控制、Session 保护
+- 📊 **数据提取** - 表格/列表/表单/元数据自动提取
+- 🌐 **网络监听** - 拦截 XHR/Fetch 请求，直接获取 API 数据
+- ⏳ **智能等待** - 网络空闲 + DOM 稳定双重策略
 
 ## 🚀 快速开始
 
@@ -96,6 +99,50 @@ hab sessions
 
 # 关闭特定 Session
 hab close -s personal-gmail
+```
+
+### 数据提取（新增）
+
+```bash
+# 提取表格数据
+hab open https://example.com/users
+hab extract-table > users.json
+
+# 提取列表数据（自动检测商品/文章列表）
+hab extract-list --selector ".product-list" > products.json
+
+# 提取表单状态
+hab extract-form > form_data.json
+
+# 提取页面元数据（SEO/OG/Schema.org）
+hab extract-meta --include seo,og > metadata.json
+```
+
+### 网络监听（新增）
+
+```bash
+# 启动网络监听
+LISTENER_ID=$(hab network-start --filter xhr,fetch --url-pattern "*/api/*" | jq -r '.listenerId')
+
+# 执行操作（翻页/点击等）
+hab click @e5
+hab wait-idle
+
+# 停止监听并获取所有 API 数据
+hab network-stop $LISTENER_ID > api_data.json
+```
+
+### 智能等待（新增）
+
+```bash
+# 等待页面完全空闲（网络 + DOM）
+hab wait-idle --timeout 30000
+
+# 等待元素可见
+hab wait-element "css=.data-row" --state visible
+
+# 等待加载动画消失
+hab wait-element "css=.loading" --state detached
 ```
 
 ## 📖 完整命令列表

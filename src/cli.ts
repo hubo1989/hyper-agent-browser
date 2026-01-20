@@ -183,6 +183,47 @@ program
     console.log(result);
   });
 
+program
+  .command("wait-idle")
+  .description("Wait for page to be idle (network + DOM stable)")
+  .option("--timeout <ms>", "Timeout in milliseconds", "30000")
+  .option("--strategy <strategy>", "Strategy: network, dom, or both", "both")
+  .option("--network-idle-time <ms>", "Network idle time", "500")
+  .option("--dom-stable-time <ms>", "DOM stable time", "500")
+  .option("--ignore <selectors>", "Ignore DOM changes in selectors (comma-separated)")
+  .action(async (options, command) => {
+    const result = await executeViaDaemon(
+      "wait-idle",
+      {
+        timeout: Number.parseInt(options.timeout),
+        strategy: options.strategy,
+        networkIdleTime: Number.parseInt(options.networkIdleTime),
+        domStableTime: Number.parseInt(options.domStableTime),
+        ignoreSelectors: options.ignore ? options.ignore.split(",") : undefined,
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
+program
+  .command("wait-element <selector>")
+  .description("Wait for element state (attached/detached/visible/hidden)")
+  .option("--state <state>", "Element state", "visible")
+  .option("--timeout <ms>", "Timeout in milliseconds", "10000")
+  .action(async (selector, options, command) => {
+    const result = await executeViaDaemon(
+      "wait-element",
+      {
+        selector,
+        state: options.state,
+        timeout: Number.parseInt(options.timeout),
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
 // 第一批新增 Action 命令
 program
   .command("check <selector>")
@@ -503,6 +544,111 @@ program
   .description("Get page title")
   .action(async (_options, command) => {
     const result = await executeViaDaemon("title", {}, command.parent);
+    console.log(result);
+  });
+
+// Extract commands
+program
+  .command("extract-table")
+  .description("Extract table data from page")
+  .option("--selector <selector>", "Table selector")
+  .option("--no-headers", "Exclude headers")
+  .option("--max-rows <number>", "Maximum number of rows", "1000")
+  .action(async (options, command) => {
+    const result = await executeViaDaemon(
+      "extract-table",
+      {
+        selector: options.selector,
+        includeHeaders: options.headers,
+        maxRows: Number.parseInt(options.maxRows),
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
+program
+  .command("extract-list")
+  .description("Extract list data from page")
+  .option("--selector <selector>", "List container selector")
+  .option("--pattern <pattern>", "Item pattern (auto by default)", "auto")
+  .option("--max-items <number>", "Maximum number of items", "1000")
+  .action(async (options, command) => {
+    const result = await executeViaDaemon(
+      "extract-list",
+      {
+        selector: options.selector,
+        pattern: options.pattern,
+        maxItems: Number.parseInt(options.maxItems),
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
+program
+  .command("extract-form")
+  .description("Extract form field data from page")
+  .option("--selector <selector>", "Form selector")
+  .option("--include-disabled", "Include disabled fields")
+  .action(async (options, command) => {
+    const result = await executeViaDaemon(
+      "extract-form",
+      {
+        selector: options.selector,
+        includeDisabled: options.includeDisabled,
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
+program
+  .command("extract-meta")
+  .description("Extract page metadata (SEO, OpenGraph, Schema.org)")
+  .option("--include <types>", "Metadata types (seo,og,twitter,schema,other)", "seo,og,twitter,schema,other")
+  .action(async (options, command) => {
+    const result = await executeViaDaemon(
+      "extract-meta",
+      {
+        include: options.include.split(","),
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
+// Network commands
+program
+  .command("network-start")
+  .description("Start network request monitoring")
+  .option("--filter <types>", "Resource types (xhr,fetch,document,script,image,font)", "xhr,fetch")
+  .option("--url-pattern <pattern>", "URL pattern to match (glob)")
+  .option("--methods <methods>", "HTTP methods (GET,POST,PUT,DELETE)")
+  .action(async (options, command) => {
+    const result = await executeViaDaemon(
+      "network-start",
+      {
+        filter: options.filter.split(","),
+        urlPattern: options.urlPattern,
+        methods: options.methods ? options.methods.split(",") : undefined,
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
+program
+  .command("network-stop <listener-id>")
+  .description("Stop network monitoring and get captured requests")
+  .action(async (listenerId, _options, command) => {
+    const result = await executeViaDaemon(
+      "network-stop",
+      {
+        listenerId,
+      },
+      command.parent,
+    );
     console.log(result);
   });
 

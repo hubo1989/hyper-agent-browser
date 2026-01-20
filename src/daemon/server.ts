@@ -1,8 +1,11 @@
 import * as actionCommands from "../commands/actions";
 import * as advancedCommands from "../commands/advanced";
+import * as extractCommands from "../commands/extract";
 import * as getterCommands from "../commands/getters";
 import * as infoCommands from "../commands/info";
 import * as navigationCommands from "../commands/navigation";
+import * as networkCommands from "../commands/network";
+import * as waitCommands from "../commands/wait";
 import { SessionManager } from "../session/manager";
 import { ReferenceStore } from "../snapshot/reference-store";
 import { formatError } from "../utils/errors";
@@ -527,6 +530,69 @@ export class DaemonServer {
           case "highlight":
             await advancedCommands.highlightElement(page, args.selector);
             result = `Highlighted: ${args.selector}`;
+            break;
+
+          // Wait commands
+          case "wait-idle":
+            await waitCommands.waitIdle(page, {
+              timeout: args.timeout,
+              strategy: args.strategy,
+              networkIdleTime: args.networkIdleTime,
+              domStableTime: args.domStableTime,
+              ignoreSelectors: args.ignoreSelectors,
+            });
+            result = "Page is idle";
+            break;
+
+          case "wait-element":
+            await waitCommands.waitElement(page, args.selector, {
+              state: args.state,
+              timeout: args.timeout,
+            });
+            result = `Element ${args.state || "visible"}: ${args.selector}`;
+            break;
+
+          // Extract commands
+          case "extract-table":
+            result = await extractCommands.extractTable(page, {
+              selector: args.selector,
+              includeHeaders: args.includeHeaders,
+              maxRows: args.maxRows,
+            });
+            break;
+
+          case "extract-list":
+            result = await extractCommands.extractList(page, {
+              selector: args.selector,
+              pattern: args.pattern,
+              maxItems: args.maxItems,
+            });
+            break;
+
+          case "extract-form":
+            result = await extractCommands.extractForm(page, {
+              selector: args.selector,
+              includeDisabled: args.includeDisabled,
+            });
+            break;
+
+          case "extract-meta":
+            result = await extractCommands.extractMeta(page, {
+              include: args.include,
+            });
+            break;
+
+          // Network commands
+          case "network-start":
+            result = await networkCommands.networkStart(page, session, {
+              filter: args.filter,
+              urlPattern: args.urlPattern,
+              methods: args.methods,
+            });
+            break;
+
+          case "network-stop":
+            result = await networkCommands.networkStop(args.listenerId);
             break;
 
           default:
