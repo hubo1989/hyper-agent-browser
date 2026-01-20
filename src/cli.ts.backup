@@ -1,0 +1,529 @@
+#!/usr/bin/env bun
+import { Command } from "commander";
+import { BrowserContextManager } from "./browser/context";
+import * as actionCommands from "./commands/actions";
+import * as infoCommands from "./commands/info";
+import * as navigationCommands from "./commands/navigation";
+import * as sessionCommands from "./commands/session";
+import * as configCommands from "./commands/config";
+import { SessionManager } from "./session/manager";
+import { ReferenceStore } from "./snapshot/reference-store";
+import { formatError, getExitCode } from "./utils/errors";
+
+const program = new Command();
+
+// Global state
+let sessionManager: SessionManager;
+let currentSessionName: string;
+let browserContext: BrowserContextManager | null = null;
+let referenceStore: ReferenceStore | null = null;
+
+program
+  .name("hba")
+  .description("hyperagentbrowser - Browser automation CLI for AI Agents")
+  .version("0.1.0");
+
+// Global options
+program
+  .option("-s, --session <name>", "Session name", "default")
+  .option("-H, --headed", "Show browser window", false)
+  .option("-c, --channel <browser>", "Browser channel (chrome/msedge/chromium)", "chrome")
+  .option("-t, --timeout <ms>", "Timeout in milliseconds", "30000")
+  .option("-v, --verbose", "Verbose output", false);
+
+// Navigation commands
+program
+  .command("open <url>")
+  .description("Open a URL")
+  .option("--wait-until <state>", "Wait until state (load/domcontentloaded/networkidle)", "load")
+  .action(async (url, options, command) => {
+    try {
+      await initSession(command.parent);
+      const page = await browserContext!.getPage(getBrowserOptions(command.parent));
+
+      await withOperationIndicator(`打开页面 ${url}`, async () => {
+        await navigationCommands.open(page, url, {
+          waitUntil: options.waitUntil as any,
+          timeout: getTimeout(command.parent),
+        });
+      });
+
+      await updateSessionInfo();
+      console.log(`Opened: ${url}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("reload")
+  .description("Reload current page")
+  .action(async (_options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator("刷新页面", async () => {
+        await navigationCommands.reload(page);
+      });
+      console.log("Page reloaded");
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("back")
+  .description("Go back in history")
+  .action(async (_options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator("后退", async () => {
+        await navigationCommands.back(page);
+      });
+      console.log("Navigated back");
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("forward")
+  .description("Go forward in history")
+  .action(async (_options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator("前进", async () => {
+        await navigationCommands.forward(page);
+      });
+      console.log("Navigated forward");
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+// Action commands
+program
+  .command("click <selector>")
+  .description("Click an element")
+  .action(async (selector, _options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator(`点击 ${selector}`, async () => {
+        await actionCommands.click(page, selector);
+      });
+      console.log(`Clicked: ${selector}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("fill <selector> <value>")
+  .description("Fill an input field")
+  .action(async (selector, value, _options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator(`填写 ${selector}`, async () => {
+        await actionCommands.fill(page, selector, value);
+      });
+      console.log(`Filled: ${selector}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("type <selector> <text>")
+  .description("Type text into an element")
+  .option("--delay <ms>", "Delay between keystrokes", "0")
+  .action(async (selector, text, options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator(`输入文本到 ${selector}`, async () => {
+        await actionCommands.type(page, selector, text, Number.parseInt(options.delay));
+      });
+      console.log(`Typed into: ${selector}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("press <key>")
+  .description("Press a key")
+  .action(async (key, _options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator(`按键 ${key}`, async () => {
+        await actionCommands.press(page, key);
+      });
+      console.log(`Pressed: ${key}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("scroll <direction>")
+  .description("Scroll page (up/down/left/right)")
+  .option("--amount <pixels>", "Scroll amount in pixels", "500")
+  .option("--selector <selector>", "Scroll within element")
+  .action(async (direction, options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator(`滚动 ${direction}`, async () => {
+        await actionCommands.scroll(
+          page,
+          direction as any,
+          Number.parseInt(options.amount),
+          options.selector,
+        );
+      });
+      console.log(`Scrolled ${direction}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("hover <selector>")
+  .description("Hover over an element")
+  .action(async (selector, _options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator(`悬停 ${selector}`, async () => {
+        await actionCommands.hover(page, selector);
+      });
+      console.log(`Hovered: ${selector}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("select <selector> <value>")
+  .description("Select option from dropdown")
+  .action(async (selector, value, _options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      await withOperationIndicator(`选择 ${value}`, async () => {
+        await actionCommands.select(page, selector, value);
+      });
+      console.log(`Selected: ${value} in ${selector}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("wait <condition>")
+  .description("Wait for condition (ms/selector=/hidden=/navigation)")
+  .option("--timeout <ms>", "Timeout in milliseconds")
+  .action(async (condition, options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+
+      const conditionValue = /^\d+$/.test(condition) ? Number.parseInt(condition) : condition;
+      await actionCommands.wait(page, conditionValue, {
+        timeout: options.timeout ? Number.parseInt(options.timeout) : undefined,
+      });
+      console.log("Wait completed");
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+// Info commands
+program
+  .command("snapshot")
+  .description("Get page snapshot")
+  .option("-i, --interactive", "Show only interactive elements")
+  .option("-f, --full", "Show all elements")
+  .option("-r, --raw", "Output raw JSON")
+  .option("-o, --output <file>", "Output to file")
+  .action(async (options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+
+      const result = await withOperationIndicator("获取页面快照", async () => {
+        return await infoCommands.snapshot(page, {
+          interactive: options.interactive,
+          full: options.full,
+          raw: options.raw,
+          referenceStore: referenceStore,
+        });
+      });
+
+      if (options.output) {
+        await Bun.write(options.output, result);
+        console.log(`Snapshot saved to: ${options.output}`);
+      } else {
+        console.log(result);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("screenshot")
+  .description("Take a screenshot")
+  .option("-o, --output <file>", "Output file", "screenshot.png")
+  .option("--full-page", "Capture full page")
+  .option("--selector <selector>", "Capture specific element")
+  .action(async (options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+
+      const output = await withOperationIndicator("截图", async () => {
+        return await infoCommands.screenshot(page, {
+          output: options.output,
+          fullPage: options.fullPage,
+          selector: options.selector,
+        });
+      });
+      console.log(`Screenshot saved to: ${output}`);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("evaluate <script>")
+  .description("Execute JavaScript in page context")
+  .action(async (script, _options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      const result = await infoCommands.evaluate(page, script);
+      console.log(result);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("url")
+  .description("Get current URL")
+  .action(async (_options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      const url = await infoCommands.url(page);
+      console.log(url);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("title")
+  .description("Get page title")
+  .action(async (_options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      const title = await infoCommands.title(page);
+      console.log(title);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("content")
+  .description("Get page text content")
+  .option("--selector <selector>", "Get content from specific element")
+  .option("--max-length <n>", "Maximum length", "10000")
+  .action(async (options, command) => {
+    try {
+      await ensureConnected(command.parent);
+      const page = await browserContext!.getPage();
+      const text = await infoCommands.content(page, {
+        selector: options.selector,
+        maxLength: Number.parseInt(options.maxLength),
+      });
+      console.log(text);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+// Session commands
+program
+  .command("sessions")
+  .description("List all sessions")
+  .option("--json", "Output as JSON")
+  .action(async (options) => {
+    try {
+      sessionManager = new SessionManager();
+      const output = await sessionCommands.listSessions(sessionManager, {
+        json: options.json,
+      });
+      console.log(output);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+program
+  .command("close")
+  .description("Close current session")
+  .option("--all", "Close all sessions")
+  .action(async (options, command) => {
+    try {
+      sessionManager = sessionManager || new SessionManager();
+      const sessionName = options.all ? undefined : getSessionName(command.parent);
+
+      if (browserContext) {
+        await browserContext.close();
+        browserContext = null;
+      }
+
+      const output = await sessionCommands.closeSession(sessionManager, sessionName, options.all);
+      console.log(output);
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+// Config commands
+program
+  .command("config")
+  .description("Manage configuration")
+  .argument("[action]", "Action: list, get, set")
+  .argument("[key]", "Config key (for get/set)")
+  .argument("[value]", "Config value (for set)")
+  .action(async (action, key, value) => {
+    try {
+      if (!action || action === "list") {
+        const output = await configCommands.listConfig();
+        console.log(output);
+      } else if (action === "get") {
+        if (!key) {
+          throw new Error("Config key required for 'get' action");
+        }
+        const output = await configCommands.getConfig(key);
+        console.log(output);
+      } else if (action === "set") {
+        if (!key || !value) {
+          throw new Error("Config key and value required for 'set' action");
+        }
+        const output = await configCommands.setConfig(key, value);
+        console.log(output);
+      } else {
+        throw new Error(`Unknown config action: ${action}`);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  });
+
+// Version command
+program
+  .command("version")
+  .description("Show version information")
+  .action(() => {
+    console.log("hyperagentbrowser v0.1.0");
+    console.log(`Bun v${Bun.version}`);
+    console.log("Patchright v1.55.1");
+  });
+
+// Helper functions
+async function withOperationIndicator<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  try {
+    await browserContext?.showOperationIndicator(operation);
+    const result = await fn();
+    return result;
+  } finally {
+    await browserContext?.hideOperationIndicator();
+  }
+}
+
+async function initSession(parentCommand: any) {
+  currentSessionName = getSessionName(parentCommand);
+  sessionManager = new SessionManager();
+
+  const channel = getChannel(parentCommand);
+  const session = await sessionManager.getOrCreate(currentSessionName, channel);
+
+  // Initialize reference store for this session
+  referenceStore = new ReferenceStore(session);
+  await referenceStore.load();
+
+  // Set the global reference store for actions
+  actionCommands.setReferenceStore(referenceStore);
+
+  browserContext = new BrowserContextManager(session);
+  await browserContext.getPage(getBrowserOptions(parentCommand));
+
+  // Update session with wsEndpoint and PID
+  const wsEndpoint = browserContext.getWsEndpoint();
+  const pid = browserContext.getPid();
+  if (wsEndpoint) {
+    await sessionManager.markRunning(currentSessionName, wsEndpoint, pid);
+  }
+}
+
+async function ensureConnected(parentCommand: any) {
+  if (!browserContext) {
+    await initSession(parentCommand);
+  }
+}
+
+async function updateSessionInfo() {
+  if (!browserContext || !sessionManager) return;
+
+  const page = await browserContext.getPage();
+  const url = await page.url();
+  const title = await page.title();
+
+  await sessionManager.updatePageInfo(currentSessionName, url, title);
+}
+
+function getBrowserOptions(parentCommand: any) {
+  return {
+    headed: parentCommand.opts().headed,
+    timeout: getTimeout(parentCommand),
+    channel: getChannel(parentCommand),
+  };
+}
+
+function getSessionName(parentCommand: any): string {
+  return parentCommand.opts().session || "default";
+}
+
+function getChannel(parentCommand: any): "chrome" | "msedge" | "chromium" {
+  return parentCommand.opts().channel || "chrome";
+}
+
+function getTimeout(parentCommand: any): number {
+  return Number.parseInt(parentCommand.opts().timeout || "30000");
+}
+
+function handleError(error: any) {
+  if (error instanceof Error) {
+    console.error(formatError(error));
+    process.exit(getExitCode(error));
+  } else {
+    console.error("Error:", error);
+    process.exit(1);
+  }
+}
+
+program.parse();
