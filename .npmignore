@@ -1,0 +1,52 @@
+# Tests
+tests/
+coverage/
+*.test.ts
+*.spec.ts
+
+# Build artifacts
+dist/
+*.log
+
+# Development
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Documentation (keep README)
+CLAUDE.md
+PROJECT_STATUS.md
+IMPLEMENTATION_SUMMARY.md
+SPEC_COMPLETION.md
+PROJECT_COMPLETION_REPORT.md
+FINAL_SUMMARY.md
+FEATURE_GAP_ANALYSIS.md
+hyper-agent-browser-spec.md
+*.png
+
+# Scripts
+scripts/
+init-project.sh
+
+# Examples
+examples/
+
+# Skills
+skills/
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# Runtime
+.hab/
+.env
+.env.local
+
+# Claude
+.claude/

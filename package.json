@@ -1,11 +1,17 @@
 {
   "name": "hyper-agent-browser",
   "version": "0.1.0",
-  "description": "Pure browser automation CLI for AI Agents",
+  "description": "Pure browser automation CLI for AI Agents - 纯浏览器自动化 CLI，专为 AI Agent 设计",
   "type": "module",
+  "main": "src/cli.ts",
   "bin": {
     "hab": "src/cli.ts"
   },
+  "files": [
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "bun run src/cli.ts",
     "build": "bun build --compile --minify src/cli.ts --outfile dist/hab",
@@ -17,11 +23,34 @@
     "test:coverage": "bun test --coverage",
     "lint": "bunx @biomejs/biome check .",
     "lint:fix": "bunx @biomejs/biome check --write .",
-    "typecheck": "bunx tsc --noEmit"
+    "typecheck": "bunx tsc --noEmit",
+    "prepublishOnly": "bun run typecheck && bun run lint"
   },
-  "keywords": ["browser-automation", "cli", "ai-agent", "playwright", "patchright"],
-  "author": "Hubert",
+  "keywords": [
+    "browser-automation",
+    "cli",
+    "ai-agent",
+    "playwright",
+    "patchright",
+    "bun",
+    "typescript",
+    "automation",
+    "testing",
+    "web-scraping"
+  ],
+  "author": {
+    "name": "Hubert",
+    "url": "https://github.com/hubo1989"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hubo1989/hyper-agent-browser.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hubo1989/hyper-agent-browser/issues"
+  },
+  "homepage": "https://github.com/hubo1989/hyper-agent-browser#readme",
   "dependencies": {
     "patchright": "^1.55.1",
     "commander": "^12.0.0",
