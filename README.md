@@ -204,11 +204,12 @@ hyper-agent-browser 专为 AI Agent 设计，可与 Claude Code 无缝集成。
 
 ```bash
 # 方法 1：从本地仓库复制
-mkdir -p ~/.claude/skills
-cp skills/hyper-browser.md ~/.claude/skills/
+mkdir -p ~/.claude/skills/hyper-agent-browser
+cp skills/hyper-browser.md ~/.claude/skills/hyper-agent-browser/skill.md
 
 # 方法 2：直接下载
-curl -o ~/.claude/skills/hyper-browser.md \
+mkdir -p ~/.claude/skills/hyper-agent-browser
+curl -o ~/.claude/skills/hyper-agent-browser/skill.md \
   https://raw.githubusercontent.com/hubo1989/hyper-agent-browser/main/skills/hyper-browser.md
 ```
 

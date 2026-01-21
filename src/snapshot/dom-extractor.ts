@@ -101,30 +101,43 @@ export class DomSnapshotExtractor {
         // Try ID first
         if (el.id) return `#${el.id}`;
 
-        // Generate nth-child selector
-        let selector = el.tagName.toLowerCase();
+        // Build path from element to root (or an element with ID)
+        const path: string[] = [];
         let current: Element | null = el;
 
-        while (current?.parentElement) {
-          const parent: Element = current.parentElement;
-          const siblings = Array.from(parent.children);
-          const index = siblings.indexOf(current);
+        while (current && current !== document.body && path.length < 6) {
+          const parentEl: Element | null = current.parentElement;
+          if (!parentEl) break;
 
-          if (index >= 0) {
-            selector = `${parent.tagName.toLowerCase()} > ${selector}:nth-child(${index + 1})`;
+          // Find index among siblings of same tag type
+          const currentTag = current.tagName;
+          const siblings: Element[] = [];
+          for (let i = 0; i < parentEl.children.length; i++) {
+            const child = parentEl.children[i];
+            if (child.tagName === currentTag) {
+              siblings.push(child);
+            }
           }
+          const index = siblings.indexOf(current) + 1;
 
-          current = parent;
-          if (current?.id) {
-            selector = `#${current.id} ${selector}`;
+          // Use nth-of-type for uniqueness among same-tag siblings
+          const segment =
+            siblings.length > 1
+              ? `${current.tagName.toLowerCase()}:nth-of-type(${index})`
+              : current.tagName.toLowerCase();
+
+          path.unshift(segment);
+
+          // Stop if parent has ID
+          if (parentEl.id) {
+            path.unshift(`#${parentEl.id}`);
             break;
           }
 
-          // Limit depth
-          if (selector.split(">").length > 5) break;
+          current = parentEl;
         }
 
-        return selector;
+        return path.join(" > ");
       }
 
       // Traverse DOM

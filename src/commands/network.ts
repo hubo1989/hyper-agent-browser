@@ -105,5 +105,7 @@ export async function cleanupSessionListeners(sessionName: string): Promise<void
     }
   }
 
-  toDelete.forEach((id) => activeListeners.delete(id));
+  for (const id of toDelete) {
+    activeListeners.delete(id);
+  }
 }

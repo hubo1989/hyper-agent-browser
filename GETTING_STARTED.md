@@ -110,8 +110,8 @@ chmod 700 ~/.hab/sessions/
 将 Skill 文件复制到 Claude Code 技能目录：
 
 ```bash
-mkdir -p ~/.claude/skills
-cp skills/hyper-browser.md ~/.claude/skills/
+mkdir -p ~/.claude/skills/hyper-agent-browser
+cp skills/hyper-browser.md ~/.claude/skills/hyper-agent-browser/skill.md
 ```
 
 ## 项目结构说明

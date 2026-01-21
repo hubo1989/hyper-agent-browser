@@ -56,7 +56,7 @@ export class FormExtractor {
         // 查找所有表单控件
         const inputs = container.querySelectorAll("input, textarea, select");
 
-        inputs.forEach((input) => {
+        for (const input of Array.from(inputs)) {
           if (
             !(
               input instanceof HTMLInputElement ||
@@ -64,12 +64,12 @@ export class FormExtractor {
               input instanceof HTMLSelectElement
             )
           ) {
-            return;
+            continue;
           }
 
           // 跳过禁用字段（如果不包含）
           if (!includeDisabled && input.disabled) {
-            return;
+            continue;
           }
 
           const field: FormField = {
@@ -135,7 +135,7 @@ export class FormExtractor {
           }
 
           fields.push(field);
-        });
+        }
 
         return { fields };
       },

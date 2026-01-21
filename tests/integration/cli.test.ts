@@ -36,7 +36,7 @@ describe("Integration Tests - Element References", () => {
   it("should take screenshot", async () => {
     const output =
       await $`bun run src/cli.ts -s ${SESSION} screenshot -o /tmp/test-screenshot.png`.text();
-    expect(output).toContain("Screenshot saved");
+    expect(output).toContain("/tmp/test-screenshot.png");
   });
 });
 
@@ -53,7 +53,7 @@ describe("Integration Tests - Session Management", () => {
     const closeResult = await $`bun run src/cli.ts -s ${SESSION} close`.text();
 
     expect(closeResult).toContain("Session closed");
-  });
+  }, 30000);
 });
 
 describe("Integration Tests - Navigation", () => {

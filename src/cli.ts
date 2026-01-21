@@ -747,7 +747,7 @@ program
   .command("version")
   .description("Show version information")
   .action(() => {
-    console.log("hyper-agent-browser v0.2.0 (with daemon architecture)");
+    console.log("hyper-agent-browser v0.3.1 (with daemon architecture)");
     console.log(`Bun v${Bun.version}`);
     console.log("Patchright v1.55.1");
   });

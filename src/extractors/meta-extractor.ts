@@ -61,7 +61,7 @@ export class MetaExtractor {
       if (includeTypes.includes("og")) {
         data.og = {};
         const ogTags = document.querySelectorAll('meta[property^="og:"]');
-        ogTags.forEach((tag) => {
+        for (const tag of Array.from(ogTags)) {
           if (tag instanceof HTMLMetaElement) {
             const property = tag.getAttribute("property");
             if (property) {
@@ -69,14 +69,14 @@ export class MetaExtractor {
               data.og[key] = tag.content;
             }
           }
-        });
+        }
       }
 
       // Twitter Cards
       if (includeTypes.includes("twitter")) {
         data.twitter = {};
         const twitterTags = document.querySelectorAll('meta[name^="twitter:"]');
-        twitterTags.forEach((tag) => {
+        for (const tag of Array.from(twitterTags)) {
           if (tag instanceof HTMLMetaElement) {
             const name = tag.getAttribute("name");
             if (name) {
@@ -84,21 +84,21 @@ export class MetaExtractor {
               data.twitter[key] = tag.content;
             }
           }
-        });
+        }
       }
 
       // Schema.org (JSON-LD)
       if (includeTypes.includes("schema")) {
         data.schema = [];
         const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-        scripts.forEach((script) => {
+        for (const script of Array.from(scripts)) {
           try {
             const json = JSON.parse(script.textContent || "");
             data.schema.push(json);
           } catch (e) {
             // 忽略解析错误
           }
-        });
+        }
       }
 
       // 其他元数据

@@ -594,7 +594,7 @@ Patchright v1.55.1
 
 ### 5.1 Skill 文件
 
-**路径**: `~/.claude/skills/hyper-browser.md` 或项目内 `skills/hyper-browser.md`
+**路径**: `~/.claude/skills/hyper-agent-browser/skill.md` 或项目内 `skills/hyper-browser.md`
 
 ```markdown
 # hyper-browser

@@ -75,7 +75,7 @@ export class ListExtractor {
             const children = Array.from(container.children);
             const classMap = new Map<string, Element[]>();
 
-            children.forEach((child) => {
+            for (const child of children) {
               const className = child.className;
               if (className) {
                 if (!classMap.has(className)) {
@@ -83,7 +83,7 @@ export class ListExtractor {
                 }
                 classMap.get(className)!.push(child);
               }
-            });
+            }
 
             // 找到最多重复的 class
             let maxCount = 0;
@@ -143,12 +143,12 @@ function extractItemData(item: Element): Record<string, any> {
 
   // 提取 data-* 属性
   if (item instanceof HTMLElement) {
-    Array.from(item.attributes).forEach((attr) => {
+    for (const attr of Array.from(item.attributes)) {
       if (attr.name.startsWith("data-")) {
         const key = attr.name.substring(5);
         data[key] = attr.value;
       }
-    });
+    }
   }
 
   // 提取 id
@@ -160,12 +160,13 @@ function extractItemData(item: Element): Record<string, any> {
   const textNodes: string[] = [];
   const walker = document.createTreeWalker(item, NodeFilter.SHOW_TEXT, null);
 
-  let node: Node | null;
-  while ((node = walker.nextNode())) {
+  let node = walker.nextNode();
+  while (node) {
     const text = node.textContent?.trim();
     if (text && text.length > 0) {
       textNodes.push(text);
     }
+    node = walker.nextNode();
   }
 
   if (textNodes.length === 1) {
