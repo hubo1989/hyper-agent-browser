@@ -1,6 +1,6 @@
 {
   "name": "hyper-agent-browser",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Pure browser automation CLI for AI Agents - 纯浏览器自动化 CLI，专为 AI Agent 设计",
   "type": "module",
   "main": "src/cli.ts",
