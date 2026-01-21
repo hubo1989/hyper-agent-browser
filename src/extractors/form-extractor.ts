@@ -57,7 +57,13 @@ export class FormExtractor {
         const inputs = container.querySelectorAll("input, textarea, select");
 
         inputs.forEach((input) => {
-          if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement || input instanceof HTMLSelectElement)) {
+          if (
+            !(
+              input instanceof HTMLInputElement ||
+              input instanceof HTMLTextAreaElement ||
+              input instanceof HTMLSelectElement
+            )
+          ) {
             return;
           }
 
@@ -68,7 +74,10 @@ export class FormExtractor {
 
           const field: FormField = {
             name: input.name || input.id || "",
-            type: input instanceof HTMLSelectElement ? "select" : (input as HTMLInputElement).type || "text",
+            type:
+              input instanceof HTMLSelectElement
+                ? "select"
+                : (input as HTMLInputElement).type || "text",
             required: input.required,
             disabled: input.disabled,
           };

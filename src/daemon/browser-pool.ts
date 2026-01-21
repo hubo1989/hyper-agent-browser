@@ -22,15 +22,20 @@ export class BrowserPool {
       // 浏览器断开连接，尝试重连
       try {
         await browser.connect();
-        return browser;
+        if (browser.isConnected()) {
+          return browser;
+        }
       } catch (error) {
         console.error(`Failed to reconnect browser for session ${key}:`, error);
-        // 重连失败，移除旧实例
-        this.browsers.delete(key);
       }
+
+      // 重连失败，移除旧实例并创建新的
+      console.log(`Removing stale browser instance for session ${key}`);
+      this.browsers.delete(key);
     }
 
     // 创建新的浏览器实例
+    console.log(`Creating new browser instance for session ${key}`);
     const browser = new BrowserManager(session, options);
     await browser.connect();
     this.browsers.set(key, browser);
@@ -44,13 +49,23 @@ export class BrowserPool {
       return false;
     }
 
-    await browser.close();
+    try {
+      await browser.close();
+    } catch (error) {
+      console.error(`Error closing browser for session ${sessionName}:`, error);
+    }
     this.browsers.delete(sessionName);
     return true;
   }
 
   async closeAll(): Promise<void> {
-    const closePromises = Array.from(this.browsers.values()).map((b) => b.close());
+    const closePromises = Array.from(this.browsers.entries()).map(async ([name, browser]) => {
+      try {
+        await browser.close();
+      } catch (error) {
+        console.error(`Error closing browser for session ${name}:`, error);
+      }
+    });
     await Promise.all(closePromises);
     this.browsers.clear();
   }
@@ -61,5 +76,23 @@ export class BrowserPool {
 
   size(): number {
     return this.browsers.size;
+  }
+
+  /**
+   * 清理所有无效的浏览器实例
+   */
+  async cleanup(): Promise<void> {
+    const toRemove: string[] = [];
+
+    for (const [name, browser] of this.browsers.entries()) {
+      if (!browser.isConnected()) {
+        toRemove.push(name);
+      }
+    }
+
+    for (const name of toRemove) {
+      console.log(`Cleaning up disconnected browser: ${name}`);
+      this.browsers.delete(name);
+    }
   }
 }

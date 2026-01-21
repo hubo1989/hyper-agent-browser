@@ -1,7 +1,7 @@
-import type { Page } from "patchright";
-import { mkdir, writeFile, readFile, appendFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import type { Page } from "patchright";
 
 export interface NetworkListenerConfig {
   id: string;
@@ -111,8 +111,7 @@ export class NetworkListener {
           }
 
           requestData.timing.endTime = Date.now();
-          requestData.timing.duration =
-            requestData.timing.endTime - requestData.timing.startTime;
+          requestData.timing.duration = requestData.timing.endTime - requestData.timing.startTime;
         }
       } catch {
         // 请求失败
@@ -130,11 +129,14 @@ export class NetworkListener {
     };
 
     // 设置自动超时清理（1小时）
-    setTimeout(async () => {
-      if (this.config.status === "active") {
-        await this.stop();
-      }
-    }, 60 * 60 * 1000);
+    setTimeout(
+      async () => {
+        if (this.config.status === "active") {
+          await this.stop();
+        }
+      },
+      60 * 60 * 1000,
+    );
   }
 
   /**
@@ -210,9 +212,7 @@ export class NetworkListener {
     if (this.config.filter.urlPattern) {
       const pattern = this.config.filter.urlPattern;
       // 简单的 glob 模式匹配
-      const regex = new RegExp(
-        pattern.replace(/\*/g, ".*").replace(/\?/g, "."),
-      );
+      const regex = new RegExp(pattern.replace(/\*/g, ".*").replace(/\?/g, "."));
       if (!regex.test(url)) {
         return false;
       }
@@ -232,7 +232,7 @@ export class NetworkListener {
    * 追加请求数据
    */
   private async appendRequest(request: NetworkRequest): Promise<void> {
-    const line = JSON.stringify(request) + "\n";
+    const line = `${JSON.stringify(request)}\n`;
     await appendFile(this.requestsFile, line);
   }
 }

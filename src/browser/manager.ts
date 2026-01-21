@@ -29,10 +29,26 @@ export class BrowserManager {
   }
 
   async connect(): Promise<void> {
+    // 清理可能存在的无效状态
+    if (this.page?.isClosed()) {
+      this.page = null;
+    }
+    if (this.context) {
+      try {
+        // 检查 context 是否有效
+        this.context.pages();
+      } catch {
+        this.context = null;
+        this.browser = null;
+      }
+    }
+
     // Try to reconnect to existing browser via CDP
     if (this.session.wsEndpoint && (await this.isBrowserRunning())) {
       try {
-        this.browser = await chromium.connectOverCDP(this.session.wsEndpoint);
+        this.browser = await chromium.connectOverCDP(this.session.wsEndpoint, {
+          timeout: 5000, // 5 秒超时，避免长时间等待
+        });
         const contexts = this.browser.contexts();
 
         if (contexts.length > 0) {
@@ -51,10 +67,19 @@ export class BrowserManager {
           this.page.setDefaultTimeout(this.options.timeout);
         }
 
+        // 监听页面关闭事件
+        this.page.on("close", () => {
+          this.page = null;
+        });
+
         console.log(`Reconnected to existing browser (PID: ${this.session.pid})`);
         return;
       } catch (error) {
         console.error("Failed to reconnect, launching new browser:", error);
+        // 清理失败的连接状态
+        this.browser = null;
+        this.context = null;
+        this.page = null;
       }
     }
 
@@ -144,6 +169,20 @@ export class BrowserManager {
       if (this.options.timeout) {
         this.page.setDefaultTimeout(this.options.timeout);
       }
+
+      // 监听页面关闭事件，自动清理状态
+      this.page.on("close", () => {
+        console.log("Page closed, clearing state");
+        this.page = null;
+      });
+
+      // 监听 context 关闭事件
+      this.context.on("close", () => {
+        console.log("Context closed, clearing all state");
+        this.browser = null;
+        this.context = null;
+        this.page = null;
+      });
 
       // @ts-ignore - Browser has process and wsEndpoint methods
       const pid = this.browser?.process?.()?.pid;
@@ -286,7 +325,13 @@ export class BrowserManager {
   }
 
   async getPage(): Promise<Page> {
-    if (!this.page) {
+    // 检查 page 是否有效
+    if (!this.page || this.page.isClosed()) {
+      // 清理旧状态
+      this.browser = null;
+      this.context = null;
+      this.page = null;
+      // 重新连接
       await this.connect();
     }
     return this.page!;
@@ -316,7 +361,20 @@ export class BrowserManager {
   }
 
   isConnected(): boolean {
-    return this.browser !== null && this.page !== null;
+    if (!this.context || !this.page) {
+      return false;
+    }
+
+    // 真正检查连接是否有效
+    try {
+      // 检查 page 是否已关闭
+      if (this.page.isClosed()) {
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   // Inject visual indicator for agent operations

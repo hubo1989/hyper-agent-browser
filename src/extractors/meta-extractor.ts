@@ -21,10 +21,7 @@ export class MetaExtractor {
   /**
    * 提取页面元数据
    */
-  async extract(
-    page: Page,
-    options: { include?: string[] } = {},
-  ): Promise<MetaData> {
+  async extract(page: Page, options: { include?: string[] } = {}): Promise<MetaData> {
     const include = options.include ?? ["seo", "og", "twitter", "schema", "other"];
 
     const url = page.url();

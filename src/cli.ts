@@ -606,7 +606,11 @@ program
 program
   .command("extract-meta")
   .description("Extract page metadata (SEO, OpenGraph, Schema.org)")
-  .option("--include <types>", "Metadata types (seo,og,twitter,schema,other)", "seo,og,twitter,schema,other")
+  .option(
+    "--include <types>",
+    "Metadata types (seo,og,twitter,schema,other)",
+    "seo,og,twitter,schema,other",
+  )
   .action(async (options, command) => {
     const result = await executeViaDaemon(
       "extract-meta",
