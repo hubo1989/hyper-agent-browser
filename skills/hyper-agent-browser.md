@@ -2,6 +2,11 @@
 
 Control web browsers through CLI commands for automation tasks.
 
+---
+alwaysApply: false
+evolving: true
+---
+
 ## Overview
 
 hyper-agent-browser (hab) is a browser automation CLI that lets you:
@@ -9,6 +14,24 @@ hyper-agent-browser (hab) is a browser automation CLI that lets you:
 - Interact with elements (click, fill, type)
 - Extract page information via snapshots
 - Maintain login sessions across invocations
+
+## Session 使用原则
+
+**默认行为：始终使用 default session，保持登录状态持久化。**
+
+- 除非用户明确要求创建新 session 或使用特定命名的 session，否则不要指定 `-s` 参数
+- 这样可以复用已有的登录状态（Cookies、LocalStorage），避免重复登录
+- 只有当用户说"新建一个 session"、"用 xxx session"、"隔离的浏览器"等明确要求时才使用 `-s <name>`
+
+```bash
+# ✅ 默认用法（复用登录状态）
+hab open https://example.com
+hab snapshot -i
+
+# ✅ 仅当用户明确要求时才用命名 session
+hab -s gmail open https://mail.google.com   # 用户说"用 gmail session"
+hab -s isolated open https://example.com    # 用户说"新建隔离环境"
+```
 
 ## Core Workflow
 

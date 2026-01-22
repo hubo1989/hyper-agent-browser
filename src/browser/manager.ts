@@ -149,13 +149,22 @@ export class BrowserManager {
       }
 
       // Use launchPersistentContext for UserData persistence
-      this.context = await chromium.launchPersistentContext(this.session.userDataDir, {
+      // 给启动加上超时保护（15秒）
+      const launchPromise = chromium.launchPersistentContext(this.session.userDataDir, {
         channel: this.options.channel,
         headless: !this.options.headed,
         args: launchArgs,
         ignoreDefaultArgs: ignoreArgs,
         viewport: { width: 1280, height: 720 },
+        timeout: 15000, // 15秒启动超时
       });
+
+      this.context = await Promise.race([
+        launchPromise,
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Browser launch timeout (15s)")), 15000),
+        ),
+      ]);
 
       // Extract browser from context
       // @ts-ignore - context has _browser property
@@ -334,6 +343,22 @@ export class BrowserManager {
       // 重新连接
       await this.connect();
     }
+
+    // 确保返回当前活动页面（可能有多个页面时需要获取最新的）
+    if (this.context) {
+      const pages = this.context.pages();
+      if (pages.length > 0) {
+        // 优先返回非 about:blank 的页面
+        const activePage = pages.find((p) => p.url() !== "about:blank") || pages[pages.length - 1];
+        if (activePage !== this.page) {
+          this.page = activePage;
+          if (this.options.timeout) {
+            this.page.setDefaultTimeout(this.options.timeout);
+          }
+        }
+      }
+    }
+
     return this.page!;
   }
 
@@ -353,7 +378,30 @@ export class BrowserManager {
 
   async close(): Promise<void> {
     if (this.browser) {
-      await this.browser.close();
+      // 获取 PID 以便超时后强制 kill
+      const pid = this.getPid();
+
+      try {
+        // 给 close 操作 5 秒超时
+        await Promise.race([
+          this.browser.close(),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Browser close timeout")), 5000),
+          ),
+        ]);
+      } catch (error) {
+        console.log("Browser close failed or timed out, forcing cleanup...");
+        // 强制 kill 进程
+        if (pid) {
+          try {
+            process.kill(pid, "SIGKILL");
+            console.log(`Force killed browser process (PID: ${pid})`);
+          } catch {
+            // 进程可能已经退出
+          }
+        }
+      }
+
       this.browser = null;
       this.context = null;
       this.page = null;

@@ -43,7 +43,42 @@ async function getLocator(page: Page, selector: string): Promise<Locator> {
 
 export async function click(page: Page, selector: string): Promise<void> {
   const locator = await getLocator(page, selector);
-  await locator.click();
+
+  // 先尝试正常点击
+  try {
+    await locator.click({ timeout: 5000 });
+  } catch (error) {
+    // 如果被遮罩拦截，逐级降级
+    if (error instanceof Error && error.message.includes("intercepts pointer events")) {
+      console.log("Element intercepted, trying force click...");
+      try {
+        await locator.click({ force: true, timeout: 5000 });
+      } catch {
+        // force click 失败，使用完整鼠标事件序列（兼容 React 等框架）
+        console.log("Force click failed, using mouse event sequence...");
+        await locator.evaluate((el: HTMLElement) => {
+          const rect = el.getBoundingClientRect();
+          const x = rect.left + rect.width / 2;
+          const y = rect.top + rect.height / 2;
+
+          // 模拟完整鼠标事件序列
+          for (const type of ["mousedown", "mouseup", "click"]) {
+            el.dispatchEvent(
+              new MouseEvent(type, {
+                bubbles: true,
+                cancelable: true,
+                view: window,
+                clientX: x,
+                clientY: y,
+              }),
+            );
+          }
+        });
+      }
+    } else {
+      throw error;
+    }
+  }
 }
 
 export async function fill(page: Page, selector: string, value: string): Promise<void> {
