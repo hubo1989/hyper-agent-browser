@@ -14,6 +14,18 @@ hyper-agent-browser (hab) is a browser automation CLI that lets you:
 - Interact with elements (click, fill, type)
 - Extract page information via snapshots
 - Maintain login sessions across invocations
+- Download files with authentication
+- Handle login detection and captchas
+
+## 相关 Skills
+
+| Skill | 用途 |
+|-------|------|
+| [login-detection.md](./login-detection.md) | 智能登录检测，自动切换 headed 模式 |
+| [retry-strategy.md](./retry-strategy.md) | 操作失败重试策略 |
+| [download-guide.md](./download-guide.md) | 文件下载指南 |
+| [captcha-handling.md](./captcha-handling.md) | 验证码处理 |
+| [web-monitoring.md](./web-monitoring.md) | 网页监控 |
 
 ## Session 使用原则
 
@@ -58,6 +70,11 @@ hab -s isolated open https://example.com    # 用户说"新建隔离环境"
 - `hab snapshot -i` - Get interactive elements (MOST IMPORTANT)
 - `hab url` - Get current URL
 - `hab title` - Get page title
+
+### Download
+- `hab download <selector>` - Download by clicking element
+- `hab download <selector> -o <path>` - Specify output path
+- `hab download-url <url>` - Download directly from URL
 
 ### Session
 - `hab --session <name> <cmd>` - Use named session

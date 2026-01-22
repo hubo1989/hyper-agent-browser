@@ -1,5 +1,6 @@
 import * as actionCommands from "../commands/actions";
 import * as advancedCommands from "../commands/advanced";
+import * as downloadCommands from "../commands/download";
 import * as extractCommands from "../commands/extract";
 import * as getterCommands from "../commands/getters";
 import * as infoCommands from "../commands/info";
@@ -594,6 +595,26 @@ export class DaemonServer {
           case "network-stop":
             result = await networkCommands.networkStop(args.listenerId);
             break;
+
+          // Download commands
+          case "download": {
+            downloadCommands.setReferenceStore(referenceStore);
+            const downloadResult = await downloadCommands.download(page, args.selector, {
+              output: args.output,
+              timeout: args.timeout,
+            });
+            result = downloadCommands.formatDownloadResult(downloadResult);
+            break;
+          }
+
+          case "download-url": {
+            const downloadUrlResult = await downloadCommands.downloadUrl(page, args.url, {
+              output: args.output,
+              timeout: args.timeout,
+            });
+            result = downloadCommands.formatDownloadResult(downloadUrlResult);
+            break;
+          }
 
           default:
             throw new Error(`Unknown command: ${command}`);

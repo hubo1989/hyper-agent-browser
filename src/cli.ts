@@ -622,6 +622,43 @@ program
     console.log(result);
   });
 
+// Download commands
+program
+  .command("download <selector>")
+  .description("Download file by clicking element (preserves auth/cookies)")
+  .option("-o, --output <path>", "Output path or directory")
+  .option("--timeout <ms>", "Download timeout in milliseconds", "60000")
+  .action(async (selector, options, command) => {
+    const result = await executeViaDaemon(
+      "download",
+      {
+        selector,
+        output: options.output,
+        timeout: Number.parseInt(options.timeout),
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
+program
+  .command("download-url <url>")
+  .description("Download file directly from URL (preserves auth/cookies)")
+  .option("-o, --output <path>", "Output path or directory")
+  .option("--timeout <ms>", "Download timeout in milliseconds", "60000")
+  .action(async (url, options, command) => {
+    const result = await executeViaDaemon(
+      "download-url",
+      {
+        url,
+        output: options.output,
+        timeout: Number.parseInt(options.timeout),
+      },
+      command.parent,
+    );
+    console.log(result);
+  });
+
 // Network commands
 program
   .command("network-start")
